@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ドイツ語ゼロから完全攻略（Lektion 3〜p.32）</title>
+  <meta name="description" content="ドイツ語Lektion 3（p.24）〜Lektion 4（p.32）を単語・文法ゼロから学べるインタラクティブ学習Webアプリ" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-flag" aria-hidden="true">🇩🇪</span>
+        <div>
+          <h1 class="brand-title">ドイツ語 ゼロから攻略</h1>
+          <p class="brand-sub">Lektion 3 (p.24) 〜 Lektion 4 (p.32)</p>
+        </div>
+      </div>
+      <nav class="desktop-nav" aria-label="メインナビゲーション">
+        <button class="nav-btn active" data-tab="home">🏠 ホーム</button>
+        <button class="nav-btn" data-tab="learn">📖 解説</button>
+        <button class="nav-btn" data-tab="vocab">🃏 単語帳</button>
+        <button class="nav-btn" data-tab="practice">✏️ 問題演習</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="app-main" class="app-main">
+    <!-- Rendered dynamically by app.js -->
+  </main>
+
+  <nav class="mobile-nav" aria-label="モバイルナビゲーション">
+    <button class="nav-btn active" data-tab="home">
+      <span class="nav-icon">🏠</span>
+      <span>ホーム</span>
+    </button>
+    <button class="nav-btn" data-tab="learn">
+      <span class="nav-icon">📖</span>
+      <span>解説</span>
+    </button>
+    <button class="nav-btn" data-tab="vocab">
+      <span class="nav-icon">🃏</span>
+      <span>単語帳</span>
+    </button>
+    <button class="nav-btn" data-tab="practice">
+      <span class="nav-icon">✏️</span>
+      <span>問題</span>
+    </button>
+  </nav>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
