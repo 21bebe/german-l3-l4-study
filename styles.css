@@ -795,6 +795,69 @@ tr:last-child td {
   margin: 10px 0;
 }
 
+.word-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.word-chip {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 3px 8px;
+  font-size: 0.8rem;
+  color: var(--text);
+}
+
+.word-chip b {
+  color: var(--primary-dark);
+}
+
+.tr-ja {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.step-guide {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 13px;
+  margin: 10px 0;
+  font-size: 0.9rem;
+}
+
+.step-guide ol {
+  padding-left: 20px;
+  margin-top: 6px;
+}
+
+.step-guide li {
+  margin-bottom: 4px;
+}
+
+.answer-sheet-item {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+  background: var(--surface);
+}
+
+.answer-reveal {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: var(--success-bg);
+  border: 1px solid #bbf7d0;
+  font-size: 0.9rem;
+}
+
 /* Search & filter bar */
 .toolbar {
   display: flex;

@@ -41,8 +41,10 @@ const state = {
   fcList: [],
   vocabQuiz: null, // { type: 'meaning'|'gender', questions, index, score, answered, selected }
   practiceSetId: null, // null = menu, or setId / 'random' / 'wrong'
-  practiceInputMode: "choice", // choice | input
+  practiceInputMode: "choice", // choice | input | sheet
   practiceSession: null, // { title, questions, index, score, answered, showHint, lastCorrect, userAnswer }
+  sheetRevealAll: false,
+  sheetRevealed: {},
   progress: loadProgress()
 };
 
@@ -665,19 +667,45 @@ function fcMarkAndNext(id, mastered) {
 
 // -------------------- Render: PRACTICE --------------------
 
+function renderWordChips(words) {
+  if (!words || !words.length) return "";
+  return `
+    <div class="word-chips">
+      ${words.map((w) => `<span class="word-chip"><b>${escapeHtml(w.de)}</b>＝${escapeHtml(w.ja)}</span>`).join("")}
+    </div>
+  `;
+}
+
+function toggleSheetAnswer(qId) {
+  state.sheetRevealed[qId] = !state.sheetRevealed[qId];
+  render();
+}
+
+function toggleSheetAll() {
+  state.sheetRevealAll = !state.sheetRevealAll;
+  if (state.practiceSession) {
+    state.practiceSession.questions.forEach((q) => {
+      state.sheetRevealed[q.id] = state.sheetRevealAll;
+    });
+  }
+  render();
+}
+
 function renderPractice() {
   if (!state.practiceSession) {
     const solvedSet = new Set(state.progress.solvedQuestions);
     const wrongCount = state.progress.wrongQuestions.length;
 
     return `
-      <h2 class="section-heading">✏️ 教科書 問題演習（p.24〜p.32）</h2>
+      <h2 class="section-heading">✏️ 教科書 全問題＆解説（p.24〜p.32）</h2>
       <div class="card">
-        <div class="card-title">回答モードを選ぶ（いつでも切り替えOK）</div>
+        <div class="card-title">勉強モードを選ぶ（途中でいつでも切り替えOK）</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button class="btn ${state.practiceInputMode === "choice" ? "btn-primary" : "btn-secondary"}" onclick="state.practiceInputMode='choice'; render();">📱 4択モード（サクサク）</button>
-          <button class="btn ${state.practiceInputMode === "input" ? "btn-primary" : "btn-secondary"}" onclick="state.practiceInputMode='input'; render();">⌨️ スペル入力モード（テスト対策）</button>
+          <button class="btn ${state.practiceInputMode === "sheet" ? "btn-primary" : "btn-secondary"}" onclick="state.practiceInputMode='sheet'; render();">📖 参考書モード（全問・訳・解説を一覧）</button>
+          <button class="btn ${state.practiceInputMode === "choice" ? "btn-primary" : "btn-secondary"}" onclick="state.practiceInputMode='choice'; render();">📱 4択クイズ</button>
+          <button class="btn ${state.practiceInputMode === "input" ? "btn-primary" : "btn-secondary"}" onclick="state.practiceInputMode='input'; render();">⌨️ スペル入力</button>
         </div>
+        <p class="muted" style="margin-top:8px;">※ 最初は<strong>「📖 参考書モード」</strong>で日本語訳・単語の意味・答えと解説を見ながら読むのが一番わかりやすいです！</p>
       </div>
 
       <div class="card" style="background:var(--primary-soft);border-color:#bfdbfe;">
@@ -707,6 +735,54 @@ function renderPractice() {
   }
 
   const sess = state.practiceSession;
+
+  // 参考書モード（全問・日本語訳・単語の意味・答え解説を一覧表示）
+  if (state.practiceInputMode === "sheet") {
+    return `
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+        <button class="btn btn-sm btn-secondary" onclick="state.practiceSession = null; render();">← 問題一覧</button>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn btn-sm btn-primary" onclick="state.practiceInputMode='sheet'; render();">📖 一覧</button>
+          <button class="btn btn-sm btn-secondary" onclick="state.practiceInputMode='choice'; render();">📱 4択</button>
+          <button class="btn btn-sm btn-secondary" onclick="state.practiceInputMode='input'; render();">⌨️ 入力</button>
+        </div>
+      </div>
+
+      <div class="card" style="background:var(--primary-soft);border-color:#bfdbfe;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div>
+          <div class="card-title" style="margin:0;">${escapeHtml(sess.title)}</div>
+          <div class="muted" style="color:#1e3a8a;">全${sess.questions.length}問の訳・単語・解説をまとめて確認できます</div>
+        </div>
+        <button class="btn btn-sm btn-primary" onclick="toggleSheetAll()">
+          ${state.sheetRevealAll ? "🙈 全部の答えを隠す" : "👀 全部の答え・解説を表示"}
+        </button>
+      </div>
+
+      ${sess.questions.map((q) => {
+        const open = !!state.sheetRevealed[q.id];
+        return `
+          <div class="answer-sheet-item">
+            <div class="question-prompt">${q.prompt}</div>
+            <div class="question-ja">${escapeHtml(q.ja)}</div>
+            ${renderWordChips(q.words)}
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+              <button class="btn btn-sm ${open ? "btn-secondary" : "btn-primary"}" onclick="toggleSheetAnswer('${q.id}')">
+                ${open ? "答えを隠す" : "答えと解説を見る"}
+              </button>
+              <button class="speak-btn" data-speak="${escapeHtml(q.answer)}">🔊 正解を聞く</button>
+            </div>
+            ${open ? `
+              <div class="answer-reveal">
+                <div><strong>✅ 正解：${escapeHtml(q.answer)}</strong></div>
+                <div style="margin-top:6px;">${q.explanation}</div>
+              </div>
+            ` : ""}
+          </div>
+        `;
+      }).join("")}
+    `;
+  }
+
   const finished = sess.index >= sess.questions.length;
 
   if (finished) {
@@ -733,8 +809,9 @@ function renderPractice() {
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
       <button class="btn btn-sm btn-secondary" onclick="state.practiceSession = null; render();">← 問題一覧</button>
       <div style="display:flex;gap:6px;">
-        <button class="btn btn-sm ${state.practiceInputMode === "choice" ? "btn-primary" : "btn-secondary"}" onclick="state.practiceInputMode='choice'; render();">4択</button>
-        <button class="btn btn-sm ${state.practiceInputMode === "input" ? "btn-primary" : "btn-secondary"}" onclick="state.practiceInputMode='input'; render();">入力</button>
+        <button class="btn btn-sm btn-secondary" onclick="state.practiceInputMode='sheet'; render();">📖 一覧</button>
+        <button class="btn btn-sm ${state.practiceInputMode === "choice" ? "btn-primary" : "btn-secondary"}" onclick="state.practiceInputMode='choice'; render();">📱 4択</button>
+        <button class="btn btn-sm ${state.practiceInputMode === "input" ? "btn-primary" : "btn-secondary"}" onclick="state.practiceInputMode='input'; render();">⌨️ 入力</button>
       </div>
     </div>
 
@@ -747,9 +824,10 @@ function renderPractice() {
 
       <div class="question-prompt">${q.prompt}</div>
       <div class="question-ja">${escapeHtml(q.ja)}</div>
+      ${renderWordChips(q.words)}
 
       ${!sess.answered && !sess.showHint ? `
-        <button class="btn btn-sm btn-secondary" style="margin-bottom:10px;" onclick="state.practiceSession.showHint = true; render();">💡 ヒントを見る</button>
+        <button class="btn btn-sm btn-secondary" style="margin:6px 0 10px;" onclick="state.practiceSession.showHint = true; render();">💡 ヒントを見る</button>
       ` : ""}
       ${sess.showHint ? `<div class="hint-box">💡 <strong>ヒント：</strong>${escapeHtml(q.hint)}</div>` : ""}
 
