@@ -3,6 +3,28 @@
 // ============================================================
 
 const STORAGE_KEY = "german_l3_l4_progress_v1";
+const THEME_KEY = "german_theme_v1";
+
+function getCurrentTheme() {
+  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+}
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  document.documentElement.style.colorScheme = theme;
+  try {
+    localStorage.setItem(THEME_KEY, theme);
+  } catch (e) {}
+  const icon = document.getElementById("theme-icon");
+  if (icon) icon.textContent = theme === "dark" ? "☀️" : "🌙";
+}
+
+function toggleTheme() {
+  const next = getCurrentTheme() === "dark" ? "light" : "dark";
+  applyTheme(next);
+  showToast(next === "dark" ? "ダークモードにしました" : "ライトモードにしました");
+  if (state.tab === "textbook") render();
+}
 
 function loadProgress() {
   try {
@@ -32,6 +54,9 @@ function saveProgress() {
 
 const state = {
   tab: "home",
+  textbookPage: 24,
+  textbookZoom: 100, // 100 | 135 | 175
+  textbookDim: true, // dim bright white scan in dark mode
   lessonId: "zero",
   vocabMode: "list", // list | flashcard | quiz
   vocabCat: "all",
@@ -185,8 +210,9 @@ function renderHome() {
 
   return `
     <section class="hero">
-      <h2>ゼロからわかるドイツ語 🇩🇪</h2>
-      <p>Lektion 3（p.24）〜 Lektion 4（p.32）の文法・単語・教科書問題をまるごと収録。音声つきでスマホでもサクサク勉強できます！</p>
+      <div class="hero-kicker">DEUTSCH STUDY NOTEBOOK • L3 – L4</div>
+      <h2>ゼロからわかるドイツ語（p.24〜p.32）</h2>
+      <p>教科書の実物ページを見ながら、全ドイツ語の日本語訳・ていねい解説・単語帳・教科書全66問をスマホでもPCでも勉強できます。</p>
       <div class="hero-stats">
         <div class="stat-box">
           <div class="stat-num">${readCount} / ${STUDY_DATA.lessons.length}</div>
@@ -201,10 +227,14 @@ function renderHome() {
           <div class="stat-label">正解した問題</div>
         </div>
       </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
+        <button class="btn btn-primary" onclick="openTextbookPage(24)">📚 教科書そのままビューを開く（p.24〜32）</button>
+        <button class="btn btn-secondary" onclick="openLesson('zero')">📖 まずは完全ゼロ入門を読む</button>
+      </div>
     </section>
 
     ${wrongCount > 0 ? `
-      <div class="card" style="border-color:#fca5a5;background:#fef2f2;">
+      <div class="card" style="border-color:var(--danger-border);background:var(--danger-bg);">
         <div class="card-title">🔥 復習チャンス！間違えた問題が ${wrongCount} 問あります</div>
         <p class="muted" style="margin-bottom:10px;">間違えた問題だけ集中して解き直すと一気にテストの点が伸びます！</p>
         <button class="btn btn-danger" onclick="openPracticeSet('wrong')">間違えた ${wrongCount} 問を復習する</button>
@@ -282,6 +312,99 @@ function renderHome() {
   `;
 }
 
+// -------------------- Render: TEXTBOOK VIEWER --------------------
+
+function openTextbookPage(page) {
+  state.textbookPage = page;
+  setTab("textbook");
+}
+
+function setTextbookZoom(zoom) {
+  state.textbookZoom = zoom;
+  render();
+}
+
+function toggleTextbookDim() {
+  state.textbookDim = !state.textbookDim;
+  render();
+}
+
+function renderTextbook() {
+  const pages = STUDY_DATA.textbookPages;
+  const idx = Math.max(0, pages.findIndex((p) => p.page === state.textbookPage));
+  const cur = pages[idx] || pages[0];
+  const prev = pages[idx - 1];
+  const next = pages[idx + 1];
+  const isDark = getCurrentTheme() === "dark";
+  const dimmed = isDark && state.textbookDim;
+
+  const pagePills = pages.map((p) => `
+    <button class="pill ${p.page === cur.page ? "active" : ""}" onclick="state.textbookPage=${p.page}; render();">
+      p.${p.page}
+    </button>
+  `).join("");
+
+  return `
+    <h2 class="section-heading">📚 教科書ビュー（p.24 〜 p.32）</h2>
+    <div class="pill-bar">${pagePills}</div>
+
+    <div class="textbook-layout">
+      <div class="textbook-stage">
+        <div class="textbook-toolbar">
+          <div style="display:flex;gap:6px;align-items:center;">
+            <button class="btn btn-sm btn-secondary" ${prev ? `onclick="state.textbookPage=${prev.page}; render();"` : "disabled"}>← 前</button>
+            <strong>${cur.lektion} ・ p.${cur.page}</strong>
+            <button class="btn btn-sm btn-secondary" ${next ? `onclick="state.textbookPage=${next.page}; render();"` : "disabled"}>次 →</button>
+          </div>
+          <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;">
+            <button class="btn btn-sm ${state.textbookZoom === 100 ? "btn-primary" : "btn-secondary"}" onclick="setTextbookZoom(100)">標準</button>
+            <button class="btn btn-sm ${state.textbookZoom === 135 ? "btn-primary" : "btn-secondary"}" onclick="setTextbookZoom(135)">1.3倍</button>
+            <button class="btn btn-sm ${state.textbookZoom === 175 ? "btn-primary" : "btn-secondary"}" onclick="setTextbookZoom(175)">1.7倍</button>
+            ${isDark ? `<button class="btn btn-sm ${state.textbookDim ? "btn-primary" : "btn-secondary"}" onclick="toggleTextbookDim()">${state.textbookDim ? "🌙 紙面の明るさ軽減ON" : "☀️ 原色表示"}</button>` : ""}
+          </div>
+        </div>
+        <div class="textbook-scroll">
+          <img
+            src="${cur.img}"
+            alt="${escapeHtml(cur.title)}"
+            class="textbook-img ${dimmed ? "dimmed" : ""}"
+            style="width:${state.textbookZoom}%;max-width:${state.textbookZoom === 100 ? "100%" : "none"};"
+            loading="eager"
+          />
+        </div>
+      </div>
+
+      <aside class="textbook-side">
+        <div style="margin-bottom:8px;">
+          <span class="badge badge-masc">${cur.lektion}</span>
+          <span class="muted" style="margin-left:6px;">p.${cur.page} / 32</span>
+        </div>
+        <h3 class="card-title" style="margin-bottom:8px;">${escapeHtml(cur.title)}</h3>
+        <p class="muted" style="margin-bottom:14px;">${escapeHtml(cur.summary)}</p>
+
+        <div style="font-weight:800;font-size:0.88rem;margin-bottom:8px;">このページの主なドイツ語と訳</div>
+        <div class="example-list">
+          ${cur.notes.map((n) => `
+            <div class="example-item">
+              <div class="example-de">
+                <span>${escapeHtml(n.de)}</span>
+                <button class="speak-btn" data-speak="${escapeHtml(n.de)}">🔊</button>
+              </div>
+              <div class="example-ja">${escapeHtml(n.ja)}</div>
+            </div>
+          `).join("")}
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px;">
+          <button class="btn btn-primary" onclick="state.practiceInputMode='sheet'; openPracticeSet('${cur.practiceId}');">📖 このページの問題・全訳・解説を見る</button>
+          <button class="btn btn-secondary" onclick="openLesson('${cur.lessonId}')">💡 このページの文法解説を読む</button>
+          <button class="btn btn-secondary" onclick="state.practiceInputMode='choice'; openPracticeSet('${cur.practiceId}');">✏️ 4択クイズでテストする</button>
+        </div>
+      </aside>
+    </div>
+  `;
+}
+
 // -------------------- Render: LEARN --------------------
 
 function renderLearn() {
@@ -314,12 +437,12 @@ function renderLearn() {
 
   return `
     <div class="pill-bar">${pills}</div>
-    <div class="card" style="background:var(--primary-soft);border-color:#bfdbfe;">
+    <div class="card" style="background:var(--primary-soft);border-color:var(--masc-border);">
       <div class="card-title">
         <span>${lesson.title}</span>
         <span class="badge badge-masc">${lesson.badge}</span>
       </div>
-      <p class="muted" style="color:#1e3a8a;">${lesson.summary}</p>
+      <p class="muted" style="color:var(--text);">${lesson.summary}</p>
     </div>
 
     ${blocksHtml}
@@ -532,7 +655,7 @@ function renderVocab() {
                   ${genderBadge(v.gender)}
                 </div>
                 <div class="vocab-meaning">${escapeHtml(v.meaning)}</div>
-                ${v.note ? `<div class="vocab-sub" style="color:#1d4ed8;">💡 ${escapeHtml(v.note)}</div>` : ""}
+                ${v.note ? `<div class="vocab-sub" style="color:var(--primary);">💡 ${escapeHtml(v.note)}</div>` : ""}
                 <div class="vocab-actions">
                   <button class="speak-btn" data-speak="${escapeHtml(v.word)}">🔊 発音</button>
                   <button class="btn btn-sm ${m ? "btn-success" : "btn-secondary"}" onclick="toggleMastered('${v.id}')">
@@ -578,7 +701,7 @@ function renderVocab() {
             <div class="fc-back">
               <div class="fc-meaning">${escapeHtml(item.meaning)}</div>
               <div class="muted" style="margin-top:4px;">${escapeHtml(item.form)}</div>
-              ${item.note ? `<div style="font-size:0.85rem;color:#1d4ed8;margin-top:6px;">💡 ${escapeHtml(item.note)}</div>` : ""}
+              ${item.note ? `<div style="font-size:0.85rem;color:var(--primary);margin-top:6px;">💡 ${escapeHtml(item.note)}</div>` : ""}
             </div>
           ` : `<p class="muted" style="margin-top:16px;">👆 カードをタップして意味を表示</p>`}
         </div>
@@ -708,7 +831,7 @@ function renderPractice() {
         <p class="muted" style="margin-top:8px;">※ 最初は<strong>「📖 参考書モード」</strong>で日本語訳・単語の意味・答えと解説を見ながら読むのが一番わかりやすいです！</p>
       </div>
 
-      <div class="card" style="background:var(--primary-soft);border-color:#bfdbfe;">
+      <div class="card" style="background:var(--primary-soft);border-color:var(--masc-border);">
         <div class="card-title">🎯 総合テスト・復習</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <button class="btn btn-primary" onclick="openPracticeSet('random')">🎲 全範囲ランダム10問テスト</button>
@@ -748,10 +871,10 @@ function renderPractice() {
         </div>
       </div>
 
-      <div class="card" style="background:var(--primary-soft);border-color:#bfdbfe;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+      <div class="card" style="background:var(--primary-soft);border-color:var(--masc-border);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
         <div>
           <div class="card-title" style="margin:0;">${escapeHtml(sess.title)}</div>
-          <div class="muted" style="color:#1e3a8a;">全${sess.questions.length}問の訳・単語・解説をまとめて確認できます</div>
+          <div class="muted" style="color:var(--text);">全${sess.questions.length}問の訳・単語・解説をまとめて確認できます</div>
         </div>
         <button class="btn btn-sm btn-primary" onclick="toggleSheetAll()">
           ${state.sheetRevealAll ? "🙈 全部の答えを隠す" : "👀 全部の答え・解説を表示"}
@@ -936,10 +1059,17 @@ function render() {
   const main = document.getElementById("app-main");
   if (!main) return;
   if (state.tab === "home") main.innerHTML = renderHome();
+  else if (state.tab === "textbook") main.innerHTML = renderTextbook();
   else if (state.tab === "learn") main.innerHTML = renderLearn();
   else if (state.tab === "vocab") main.innerHTML = renderVocab();
   else if (state.tab === "practice") main.innerHTML = renderPractice();
 }
+
+const themeToggleBtn = document.getElementById("theme-toggle");
+if (themeToggleBtn) {
+  themeToggleBtn.addEventListener("click", toggleTheme);
+}
+applyTheme(getCurrentTheme());
 
 document.addEventListener("click", (e) => {
   const navBtn = e.target.closest(".nav-btn");

@@ -3,26 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ドイツ語ゼロから完全攻略（Lektion 3〜p.32）</title>
-  <meta name="description" content="ドイツ語Lektion 3（p.24）〜Lektion 4（p.32）を単語・文法ゼロから学べるインタラクティブ学習Webアプリ" />
+  <title>ドイツ語ゼロから攻略 — Lektion 3 (p.24) 〜 Lektion 4 (p.32)</title>
+  <meta name="description" content="ドイツ語Lektion 3（p.24）〜Lektion 4（p.32）を教科書紙面・全訳・解説・単語帳・問題演習でゼロから学べるWebアプリ" />
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("german_theme_v1");
+        var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var theme = saved || (prefersDark ? "dark" : "light");
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+      } catch (e) {}
+    })();
+  </script>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="app-header">
     <div class="header-inner">
       <div class="brand">
-        <span class="brand-flag" aria-hidden="true">🇩🇪</span>
+        <span class="brand-mark" aria-hidden="true">DE</span>
         <div>
           <h1 class="brand-title">ドイツ語 ゼロから攻略</h1>
           <p class="brand-sub">Lektion 3 (p.24) 〜 Lektion 4 (p.32)</p>
         </div>
       </div>
-      <nav class="desktop-nav" aria-label="メインナビゲーション">
-        <button class="nav-btn active" data-tab="home">🏠 ホーム</button>
-        <button class="nav-btn" data-tab="learn">📖 解説</button>
-        <button class="nav-btn" data-tab="vocab">🃏 単語帳</button>
-        <button class="nav-btn" data-tab="practice">✏️ 問題演習</button>
-      </nav>
+
+      <div class="header-right">
+        <nav class="desktop-nav" aria-label="メインナビゲーション">
+          <button class="nav-btn active" data-tab="home">ホーム</button>
+          <button class="nav-btn" data-tab="textbook">教科書</button>
+          <button class="nav-btn" data-tab="learn">解説</button>
+          <button class="nav-btn" data-tab="vocab">単語帳</button>
+          <button class="nav-btn" data-tab="practice">問題</button>
+        </nav>
+        <button id="theme-toggle" class="theme-btn" type="button" aria-label="ダークモード切替" title="ライト / ダーク切替">
+          <span id="theme-icon" aria-hidden="true">🌙</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -32,19 +50,23 @@
 
   <nav class="mobile-nav" aria-label="モバイルナビゲーション">
     <button class="nav-btn active" data-tab="home">
-      <span class="nav-icon">🏠</span>
+      <span class="nav-icon" aria-hidden="true">🏠</span>
       <span>ホーム</span>
     </button>
+    <button class="nav-btn" data-tab="textbook">
+      <span class="nav-icon" aria-hidden="true">📚</span>
+      <span>教科書</span>
+    </button>
     <button class="nav-btn" data-tab="learn">
-      <span class="nav-icon">📖</span>
+      <span class="nav-icon" aria-hidden="true">📖</span>
       <span>解説</span>
     </button>
     <button class="nav-btn" data-tab="vocab">
-      <span class="nav-icon">🃏</span>
+      <span class="nav-icon" aria-hidden="true">🃏</span>
       <span>単語帳</span>
     </button>
     <button class="nav-btn" data-tab="practice">
-      <span class="nav-icon">✏️</span>
+      <span class="nav-icon" aria-hidden="true">✏️</span>
       <span>問題</span>
     </button>
   </nav>

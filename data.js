@@ -5,6 +5,147 @@
 
 const STUDY_DATA = {
   // ----------------------------------------------------------
+  // 0. 教科書ビュー用データ（p.24 〜 p.32 の補正済み紙面＋対照ガイド）
+  // ----------------------------------------------------------
+  textbookPages: [
+    {
+      page: 24,
+      img: "pages/p24.jpg",
+      lektion: "Lektion 3",
+      title: "p.24：名詞の複数形 ＆ 男性弱変化名詞",
+      lessonId: "l3-1",
+      practiceId: "p24",
+      summary: "L3のスタート。名詞を複数にする5パターン、複数3格（den + 名詞に-n）、男性弱変化名詞（Junge / Herr / Name）と例外の中性名詞（Herz）が載っています。",
+      notes: [
+        { de: "Das Buch gehört mir.", ja: "その本は私のものです。（L3のタイトル）" },
+        { de: "die Städte → den Städten", ja: "街々（1格）→ 街々に（3格：-nが付く！）" },
+        { de: "der Vater → die Väter / die Hand → die Hände", ja: "練習1・2の答え（3格は den Vätern / den Händen）" },
+        { de: "der Mann → die Männer / die CD → die CDs", ja: "練習3・4の答え（CDsは3格でも den CDs！）" }
+      ]
+    },
+    {
+      page: 25,
+      img: "pages/p25.jpg",
+      lektion: "Lektion 3",
+      title: "p.25：人称代名詞の3・4格 ＆ 語順 ＆ 3格動詞",
+      lessonId: "l3-2",
+      practiceId: "p25",
+      summary: "L3で一番テストに出るページ！人称代名詞の表、3格と4格の並べ方、3格をとる動詞（gefallen / gehören / glauben / helfen）がまとまっています。",
+      notes: [
+        { de: "Ich schenke ihm eine Uhr.", ja: "私は彼に時計をプレゼントします。" },
+        { de: "Ich gebe es ihr.", ja: "私はそれを彼女に渡します。（両方代名詞なら 4格＋3格！）" },
+        { de: "Die Schuhe gefallen ihr gut.", ja: "それらの靴は彼女の気に入ります。" },
+        { de: "Der Junge dankt ihr. / Kennst du es? / Das Auto gehört ihm.", ja: "下部の練習1〜3の答え（Mädchenは中性なので es！）" }
+      ]
+    },
+    {
+      page: 26,
+      img: "pages/p26.jpg",
+      lektion: "Lektion 3",
+      title: "p.26：Übungen（文法練習1・2・3）＆ 時刻表現",
+      lessonId: "l3-3",
+      practiceId: "p26",
+      summary: "L3のまとめ問題（全15問）と、時刻の尋ね方（Wie viel Uhr ist es? / Wie spät ist es?）。「このページの問題を解く」から全問の訳・解説が見られます。",
+      notes: [
+        { de: "Wie viel Uhr ist es? / Wie spät ist es?", ja: "今何時ですか？（2つの聞き方）" },
+        { de: "Es ist 14 Uhr.", ja: "14時です。" },
+        { de: "Ich kaufe den Kindern ein Bilderbuch.", ja: "練習1-5：私は子どもたちに絵本を買います。（複数3格 Kindern）" },
+        { de: "Der Lehrer gibt es ihm.", ja: "練習3-4：先生はそれを彼に渡します。（4格＋3格）" }
+      ]
+    },
+    {
+      page: 27,
+      img: "pages/p27.jpg",
+      lektion: "Lektion 3",
+      title: "p.27：会話練習（時刻）＆ 追加の表現",
+      lessonId: "l3-3",
+      practiceId: "p27-28",
+      summary: "時計を見て時刻を言う練習（10.10 / 9 / 8.05 / 13.30 Uhr）、時間帯の副詞（morgens〜nachts）、um / gegen、nach Hause gehen / zu Hause sein。",
+      notes: [
+        { de: "Entschuldigung! Wie viel Uhr ist es?", ja: "すみません！今何時ですか？" },
+        { de: "Es ist zehn Uhr zehn. — Danke schön! — Bitte schön!", ja: "10時10分です。— ありがとう！ — どういたしまして！" },
+        { de: "Um 16 Uhr gehe ich nach Hause.", ja: "16時に私は帰宅します。" },
+        { de: "Gegen 16 Uhr bin ich zu Hause.", ja: "16時ごろ私は家にいます。" }
+      ]
+    },
+    {
+      page: 28,
+      img: "pages/p28.jpg",
+      lektion: "Lektion 3",
+      title: "p.28：持ち物単語 ＆ Wem＋gehören 会話",
+      lessonId: "l3-3",
+      practiceId: "p27-28",
+      summary: "身の回りの持ち物17語（青＝男性der / 赤＝女性die / 緑＝中性das）と、「〜は誰のもの？」（Wem gehört ...?）の会話、Geburtstagリスニング質問文。",
+      notes: [
+        { de: "Wem gehört der Rucksack? — Er gehört mir.", ja: "そのリュックは誰のもの？ — 私のものです。" },
+        { de: "Gehört dir die Brille? — Ja, sie gehört mir.", ja: "その眼鏡は君のもの？ — はい、私のものです。" },
+        { de: "Wem gehört das Handy? — Es gehört mir.", ja: "その携帯は誰のもの？ — 私のものです。" },
+        { de: "Was kauft Yurina für Lena?", ja: "ユリナはレーナのために何を買いますか？（会話練習2-1）" }
+      ]
+    },
+    {
+      page: 29,
+      img: "pages/p29.jpg",
+      lektion: "Lektion 3",
+      title: "p.29：Lesen 3『Mein Geburtstag』＆ 必須単語10個",
+      lessonId: "l3-3",
+      practiceId: "p26",
+      summary: "誕生日についての長文読解、小さなものを表す縮小語尾（-chen / -lein＝必ず中性 das）、独検5級レベルのL3必須単語10個。",
+      notes: [
+        { de: "Ich habe morgen Geburtstag und werde 18 Jahre alt.", ja: "私は明日誕生日で、18歳になります。" },
+        { de: "Meine Eltern geben eine Geburtstagsparty für mich.", ja: "両親が私のために誕生日パーティーを開いてくれます。" },
+        { de: "Sicher gefallen mir die Geschenke!", ja: "きっとその贈り物たちは私の気に入るはず！" },
+        { de: "Brot → Brötchen / Katze → Kätzchen", ja: "パン→小さなパン / 猫→子猫（-chenで中性dasに！）" }
+      ]
+    },
+    {
+      page: 30,
+      img: "pages/p30.jpg",
+      lektion: "Lektion 4",
+      title: "p.30：不規則動詞の現在人称変化 ＆ 練習10問",
+      lessonId: "l4-1",
+      practiceId: "p30",
+      summary: "L4のスタート！du と er/sie/es（3人称単数）のときだけ母音が変身する3パターン（a→ä / e→i / e→ie）と、特殊な5動詞（halten / geben / nehmen / werden / wissen）。",
+      notes: [
+        { de: "Fährst du nach München?", ja: "君はミュンヘンへ行くの？（L4のタイトル）" },
+        { de: "Er spricht sehr gut Deutsch.", ja: "彼はとても上手にドイツ語を話します。" },
+        { de: "Nimmst du den Zug?", ja: "君はその列車に乗るの？（nehmen → nimmst）" },
+        { de: "Woher weißt du das?", ja: "君はどこでそれを知ったの？（wissen → weißt）" }
+      ]
+    },
+    {
+      page: 31,
+      img: "pages/p31.jpg",
+      lektion: "Lektion 4",
+      title: "p.31：命令形（du / ihr / Sie）＆「〜しましょう！」",
+      lessonId: "l4-2",
+      practiceId: "p31",
+      summary: "相手ごとの命令形の作り方、依頼をやわらかくする言葉（bitte / doch / mal）、練習1〜4（全12文）、誘いの表現（動詞原形＋wir!）。",
+      notes: [
+        { de: "Komm schnell, Michael! / Seid vorsichtig!", ja: "ミヒャエル、はやく来て！ / 君たち、気をつけて！" },
+        { de: "Nehmen Sie bitte Platz!", ja: "どうかおかけください！" },
+        { de: "Sei doch ruhig! / Sieh mal!", ja: "頼むから静かにして！ / ねえ、ちょっと見て！" },
+        { de: "Lernen wir Deutsch! — Ja, gern!", ja: "ドイツ語を勉強しましょう！ — ええ、喜んで！" }
+      ]
+    },
+    {
+      page: 32,
+      img: "pages/p32.jpg",
+      lektion: "Lektion 4",
+      title: "p.32：Übungen（文法練習1・2・3 全14問）",
+      lessonId: "l4-2",
+      practiceId: "p32",
+      summary: "今回のテスト範囲のゴール！不規則動詞の会話6問、友人を誘う作文3問、間違い探し＋和訳5問。すべて「問題」タブで訳・解説つきで解けます。",
+      notes: [
+        { de: "Was isst du gern?", ja: "君は何を食べるのが好き？（練習3の例）" },
+        { de: "Essen wir zusammen zu Mittag!", ja: "いっしょにお昼ご飯を食べましょう！（練習2-1）" },
+        { de: "Fragen wir einmal den Lehrer!", ja: "一度、先生にきいてみよう！（練習2-2：男性4格 den）" },
+        { de: "Sprich bitte langsam! / Seien Sie bitte vorsichtig!", ja: "練習3-4・5の正解（命令形の超頻出ひっかけ！）" }
+      ]
+    }
+  ],
+
+  // ----------------------------------------------------------
   // 1. 超ていねい解説セクション（すべてのドイツ語に日本語訳つき！）
   // ----------------------------------------------------------
   lessons: [
