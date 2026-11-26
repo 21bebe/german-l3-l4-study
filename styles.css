@@ -784,6 +784,71 @@ tr:last-child td {
   }
 }
 
+/* Practice split layout with side grammar table panel */
+.practice-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+@media (min-width: 860px) {
+  .practice-split {
+    grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.92fr);
+  }
+}
+
+.side-table-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow);
+}
+
+@media (min-width: 860px) {
+  .side-table-panel {
+    position: sticky;
+    top: 72px;
+    max-height: calc(100vh - 92px);
+    overflow-y: auto;
+  }
+}
+
+.side-table-panel table {
+  min-width: 260px;
+  font-size: 0.82rem;
+}
+
+.side-table-panel th,
+.side-table-panel td {
+  padding: 6px 8px;
+}
+
+.side-table-tabs {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.side-tab-btn {
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
+  color: var(--text-muted);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.side-tab-btn.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
 /* Vocab cards */
 .vocab-grid {
   display: grid;

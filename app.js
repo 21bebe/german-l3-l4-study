@@ -68,6 +68,8 @@ const state = {
   vocabQuiz: null, // { type: 'meaning'|'gender', questions, index, score, answered, selected }
   practiceSetId: null, // null = menu, or setId / 'random' / 'wrong'
   practiceInputMode: "choice", // choice | input | sheet
+  practiceShowTables: false, // side-by-side grammar table panel while solving
+  practiceTableTab: "pronoun", // pronoun | article | verb | irreg | imperativ | plural | order
   practiceSession: null, // { title, questions, index, score, answered, showHint, lastCorrect, userAnswer }
   sheetRevealAll: false,
   sheetRevealed: {},
@@ -183,6 +185,19 @@ function openPracticeSet(setId) {
     if (!found) return;
     title = found.title;
     questions = found.questions;
+  }
+
+  const defaultTableMap = {
+    p24: "plural",
+    p25: "pronoun",
+    p26: "pronoun",
+    "p27-28": "pronoun",
+    p30: "irreg",
+    p31: "imperativ",
+    p32: "irreg"
+  };
+  if (defaultTableMap[setId]) {
+    state.practiceTableTab = defaultTableMap[setId];
   }
 
   state.practiceSetId = setId;
@@ -1033,6 +1048,156 @@ function fcMarkAndNext(id, mastered) {
   render();
 }
 
+function renderSideTablePanel() {
+  const tabs = [
+    { id: "pronoun", label: "人称代名詞" },
+    { id: "article", label: "冠詞" },
+    { id: "verb", label: "動詞基本" },
+    { id: "irreg", label: "L4不規則" },
+    { id: "imperativ", label: "命令形" },
+    { id: "plural", label: "複数・弱変化" },
+    { id: "order", label: "語順・3格動詞" }
+  ];
+
+  const t = state.practiceTableTab;
+  let body = "";
+
+  if (t === "pronoun") {
+    body = `
+      <div class="table-wrap"><table>
+        <thead><tr><th>意味</th><th>1格(は)</th><th>3格(に)</th><th>4格(を)</th></tr></thead>
+        <tbody>
+          <tr><td>私</td><td>ich</td><td><b>mir</b></td><td><b>mich</b></td></tr>
+          <tr><td>君</td><td>du</td><td><b>dir</b></td><td><b>dich</b></td></tr>
+          <tr><td>彼 / <span class="g-m">男性</span></td><td class="g-m">er</td><td><b>ihm</b></td><td><b>ihn</b></td></tr>
+          <tr><td>彼女 / <span class="g-f">女性</span></td><td class="g-f">sie</td><td><b>ihr</b></td><td><b>sie</b></td></tr>
+          <tr><td>それ / <span class="g-n">中性</span></td><td class="g-n">es</td><td><b>ihm</b></td><td><b>es</b></td></tr>
+          <tr><td>私たち</td><td>wir</td><td><b>uns</b></td><td><b>uns</b></td></tr>
+          <tr><td>君たち</td><td>ihr</td><td><b>euch</b></td><td><b>euch</b></td></tr>
+          <tr><td>彼ら / <span class="g-p">複数</span></td><td class="g-p">sie</td><td><b>ihnen</b></td><td><b>sie</b></td></tr>
+          <tr><td>あなた(敬称)</td><td>Sie</td><td><b>Ihnen</b></td><td><b>Sie</b></td></tr>
+        </tbody>
+      </table></div>
+      <p class="muted">※ <code>das Mädchen</code>（少女）は中性なので <b>es</b>！</p>
+    `;
+  } else if (t === "article") {
+    body = `
+      <div class="table-wrap"><table>
+        <thead><tr><th>格</th><th class="g-m">男性</th><th class="g-f">女性</th><th class="g-n">中性</th><th class="g-p">複数</th></tr></thead>
+        <tbody>
+          <tr><td>1格(は)</td><td>der / ein</td><td>die / eine</td><td>das / ein</td><td>die</td></tr>
+          <tr><td>2格(の)</td><td>des / eines</td><td>der / einer</td><td>des / eines</td><td>der</td></tr>
+          <tr><td>3格(に)</td><td><span class="hl">dem/einem</span></td><td><span class="hl">der/einer</span></td><td><span class="hl">dem/einem</span></td><td><span class="hl">den(+n)</span></td></tr>
+          <tr><td>4格(を)</td><td><span class="hl">den/einen</span></td><td>die / eine</td><td>das / ein</td><td>die</td></tr>
+        </tbody>
+      </table></div>
+    `;
+  } else if (t === "verb") {
+    body = `
+      <div class="table-wrap"><table>
+        <thead><tr><th>主語</th><th>語尾</th><th>sein</th><th>haben</th></tr></thead>
+        <tbody>
+          <tr><td>ich（私）</td><td><b>-e</b></td><td>bin</td><td>habe</td></tr>
+          <tr><td>du（君）</td><td><b>-st</b></td><td>bist</td><td>hast</td></tr>
+          <tr><td>er/sie/es</td><td><b>-t</b></td><td>ist</td><td>hat</td></tr>
+          <tr><td>wir（私たち）</td><td><b>-en</b></td><td>sind</td><td>haben</td></tr>
+          <tr><td>ihr（君たち）</td><td><b>-t</b></td><td>seid</td><td>habt</td></tr>
+          <tr><td>sie/Sie</td><td><b>-en</b></td><td>sind</td><td>haben</td></tr>
+        </tbody>
+      </table></div>
+      <p class="muted">語幹が -t/-d なら <code>-est / -et</code>（warten → wartest / wartet）</p>
+    `;
+  } else if (t === "irreg") {
+    body = `
+      <p class="muted" style="margin-bottom:6px;">変わるのは <strong>du</strong> と <strong>er/sie/es</strong> だけ！</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>原形（意味）</th><th>du</th><th>er/sie/es</th></tr></thead>
+        <tbody>
+          <tr><td>fahren（行く）</td><td><b>fährst</b></td><td><b>fährt</b></td></tr>
+          <tr><td>schlafen（眠る）</td><td><b>schläfst</b></td><td><b>schläft</b></td></tr>
+          <tr><td>tragen（着る）</td><td><b>trägst</b></td><td><b>trägt</b></td></tr>
+          <tr><td>waschen（洗う）</td><td><b>wäschst</b></td><td><b>wäscht</b></td></tr>
+          <tr><td>laufen（走る）</td><td><b>läufst</b></td><td><b>läuft</b></td></tr>
+          <tr><td>gefallen（気に入る）</td><td><b>gefällst</b></td><td><b>gefällt</b></td></tr>
+          <tr><td>sprechen（話す）</td><td><b>sprichst</b></td><td><b>spricht</b></td></tr>
+          <tr><td>essen（食べる）</td><td><b>isst</b></td><td><b>isst</b></td></tr>
+          <tr><td>helfen（助ける）</td><td><b>hilfst</b></td><td><b>hilft</b></td></tr>
+          <tr><td>treffen（会う）</td><td><b>triffst</b></td><td><b>trifft</b></td></tr>
+          <tr><td>vergessen（忘れる）</td><td><b>vergisst</b></td><td><b>vergisst</b></td></tr>
+          <tr><td>sehen（見る）</td><td><b>siehst</b></td><td><b>sieht</b></td></tr>
+          <tr><td>lesen（読む）</td><td><b>liest</b></td><td><b>liest</b></td></tr>
+          <tr><td>empfehlen（すすめる）</td><td><b>empfiehlst</b></td><td><b>empfiehlt</b></td></tr>
+          <tr><td>halten（保つ）</td><td><b>hältst</b></td><td><b>hält</b></td></tr>
+          <tr><td>geben（与える）</td><td><b>gibst</b></td><td><b>gibt</b></td></tr>
+          <tr><td>nehmen（取る・乗る）</td><td><b>nimmst</b></td><td><b>nimmt</b></td></tr>
+          <tr><td>werden（なる）</td><td><b>wirst</b></td><td><b>wird</b></td></tr>
+          <tr><td>wissen（知る）</td><td><b>weißt</b></td><td><b>weiß</b> (ich:weiß)</td></tr>
+        </tbody>
+      </table></div>
+    `;
+  } else if (t === "imperativ") {
+    body = `
+      <div class="table-wrap"><table>
+        <thead><tr><th>動詞</th><th>du</th><th>ihr</th><th>Sie</th></tr></thead>
+        <tbody>
+          <tr><td>kommen</td><td>Komm(e)!</td><td>Kommt!</td><td>Kommen Sie!</td></tr>
+          <tr><td>warten</td><td>Warte!</td><td>Wartet!</td><td>Warten Sie!</td></tr>
+          <tr><td>sprechen</td><td><b>Sprich!</b></td><td>Sprecht!</td><td>Sprechen Sie!</td></tr>
+          <tr><td>helfen</td><td><b>Hilf!</b></td><td>Helft!</td><td>Helfen Sie!</td></tr>
+          <tr><td>sehen</td><td><b>Sieh!</b></td><td>Seht!</td><td>Sehen Sie!</td></tr>
+          <tr><td>schlafen</td><td>Schlaf(e)!</td><td>Schlaft!</td><td>Schlafen Sie!</td></tr>
+          <tr><td>sein</td><td><b>Sei!</b></td><td><b>Seid!</b></td><td><b>Seien Sie!</b></td></tr>
+        </tbody>
+      </table></div>
+      <p class="muted" style="margin-top:6px;">「〜しましょう！」＝ <b>動詞原形 ＋ wir ...!</b>（例：Essen wir!）</p>
+    `;
+  } else if (t === "plural") {
+    body = `
+      <div class="table-wrap"><table>
+        <thead><tr><th>単数</th><th>複数1格</th><th>複数3格(に)</th></tr></thead>
+        <tbody>
+          <tr><td>der Vater</td><td>die Väter</td><td>den <b>Vätern</b></td></tr>
+          <tr><td>die Hand</td><td>die Hände</td><td>den <b>Händen</b></td></tr>
+          <tr><td>der Mann</td><td>die Männer</td><td>den <b>Männern</b></td></tr>
+          <tr><td>das Kind</td><td>die Kinder</td><td>den <b>Kindern</b></td></tr>
+          <tr><td>der Hund</td><td>die Hunde</td><td>den <b>Hunden</b></td></tr>
+          <tr><td>der Vogel</td><td>die Vögel</td><td>den <b>Vögeln</b></td></tr>
+          <tr><td>die CD</td><td>die CDs</td><td>den <b>CDs</b>(-n不要)</td></tr>
+        </tbody>
+      </table></div>
+      <p class="muted" style="margin-top:6px;">弱変化：Junge→Jungen / Herr→単Herrn・複Herren / Name→2格Namens / das Herz→2格Herzens・3格Herzen・4格Herz</p>
+    `;
+  } else {
+    body = `
+      <div class="table-wrap"><table>
+        <thead><tr><th>組み合わせ</th><th>語順</th></tr></thead>
+        <tbody>
+          <tr><td>両方とも名詞</td><td><b>3格 ＋ 4格</b></td></tr>
+          <tr><td>片方が代名詞</td><td><b>代名詞 ＋ 名詞</b></td></tr>
+          <tr><td>両方とも代名詞</td><td><b>4格 ＋ 3格</b>（例：es ihm）</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout callout-tip" style="margin:8px 0 0;font-size:0.84rem;">
+        <strong>必ず3格をとる動詞：</strong><br>
+        <code>gefallen</code>（気に入る）/ <code>gehören</code>（〜のもの）/ <code>glauben</code>（信じる）/ <code>helfen</code>（手伝う）/ <code>danken</code>（感謝する）
+      </div>
+    `;
+  }
+
+  return `
+    <aside class="side-table-panel" aria-label="変化表カンペパネル">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:8px;">
+        <strong style="font-size:0.9rem;">📊 変化表カンペ</strong>
+        <button class="btn btn-sm btn-secondary" onclick="state.practiceShowTables=false; render();">✕ 閉じる</button>
+      </div>
+      <div class="side-table-tabs">
+        ${tabs.map((tb) => `<button class="side-tab-btn ${tb.id === t ? "active" : ""}" onclick="state.practiceTableTab='${tb.id}'; render();">${tb.label}</button>`).join("")}
+      </div>
+      ${body}
+    </aside>
+  `;
+}
+
 // -------------------- Render: PRACTICE --------------------
 
 function renderWordChips(words) {
@@ -1106,48 +1271,54 @@ function renderPractice() {
 
   // 参考書モード（全問・日本語訳・単語の意味・答え解説を一覧表示）
   if (state.practiceInputMode === "sheet") {
+    const sheetMain = `
+      <div>
+        <div class="card" style="background:var(--primary-soft);border-color:var(--masc-border);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div>
+            <div class="card-title" style="margin:0;">${escapeHtml(sess.title)}</div>
+            <div class="muted" style="color:var(--text);">全${sess.questions.length}問の訳・単語・解説をまとめて確認できます</div>
+          </div>
+          <button class="btn btn-sm btn-primary" onclick="toggleSheetAll()">
+            ${state.sheetRevealAll ? "🙈 全部の答えを隠す" : "👀 全部の答え・解説を表示"}
+          </button>
+        </div>
+
+        ${sess.questions.map((q) => {
+          const open = !!state.sheetRevealed[q.id];
+          return `
+            <div class="answer-sheet-item">
+              <div class="question-prompt">${q.prompt}</div>
+              <div class="question-ja">${escapeHtml(q.ja)}</div>
+              ${renderWordChips(q.words)}
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+                <button class="btn btn-sm ${open ? "btn-secondary" : "btn-primary"}" onclick="toggleSheetAnswer('${q.id}')">
+                  ${open ? "答えを隠す" : "答えと解説を見る"}
+                </button>
+                <button class="speak-btn" data-speak="${escapeHtml(q.answer)}">🔊 正解を聞く</button>
+              </div>
+              ${open ? `
+                <div class="answer-reveal">
+                  <div><strong>✅ 正解：${escapeHtml(q.answer)}</strong></div>
+                  <div style="margin-top:6px;">${q.explanation}</div>
+                </div>
+              ` : ""}
+            </div>
+          `;
+        }).join("")}
+      </div>
+    `;
+
     return `
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
         <button class="btn btn-sm btn-secondary" onclick="state.practiceSession = null; render();">← 問題一覧</button>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn btn-sm ${state.practiceShowTables ? "btn-primary" : "btn-secondary"}" onclick="state.practiceShowTables=!state.practiceShowTables; render();">📊 ${state.practiceShowTables ? "表を閉じる" : "表を横に出す"}</button>
           <button class="btn btn-sm btn-primary" onclick="state.practiceInputMode='sheet'; render();">📖 一覧</button>
           <button class="btn btn-sm btn-secondary" onclick="state.practiceInputMode='choice'; render();">📱 4択</button>
           <button class="btn btn-sm btn-secondary" onclick="state.practiceInputMode='input'; render();">⌨️ 入力</button>
         </div>
       </div>
-
-      <div class="card" style="background:var(--primary-soft);border-color:var(--masc-border);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
-        <div>
-          <div class="card-title" style="margin:0;">${escapeHtml(sess.title)}</div>
-          <div class="muted" style="color:var(--text);">全${sess.questions.length}問の訳・単語・解説をまとめて確認できます</div>
-        </div>
-        <button class="btn btn-sm btn-primary" onclick="toggleSheetAll()">
-          ${state.sheetRevealAll ? "🙈 全部の答えを隠す" : "👀 全部の答え・解説を表示"}
-        </button>
-      </div>
-
-      ${sess.questions.map((q) => {
-        const open = !!state.sheetRevealed[q.id];
-        return `
-          <div class="answer-sheet-item">
-            <div class="question-prompt">${q.prompt}</div>
-            <div class="question-ja">${escapeHtml(q.ja)}</div>
-            ${renderWordChips(q.words)}
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
-              <button class="btn btn-sm ${open ? "btn-secondary" : "btn-primary"}" onclick="toggleSheetAnswer('${q.id}')">
-                ${open ? "答えを隠す" : "答えと解説を見る"}
-              </button>
-              <button class="speak-btn" data-speak="${escapeHtml(q.answer)}">🔊 正解を聞く</button>
-            </div>
-            ${open ? `
-              <div class="answer-reveal">
-                <div><strong>✅ 正解：${escapeHtml(q.answer)}</strong></div>
-                <div style="margin-top:6px;">${q.explanation}</div>
-              </div>
-            ` : ""}
-          </div>
-        `;
-      }).join("")}
+      ${state.practiceShowTables ? `<div class="practice-split">${sheetMain}${renderSideTablePanel()}</div>` : sheetMain}
     `;
   }
 
@@ -1173,16 +1344,7 @@ function renderPractice() {
   const q = sess.questions[sess.index];
   const pct = Math.round((sess.index / sess.questions.length) * 100);
 
-  return `
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
-      <button class="btn btn-sm btn-secondary" onclick="state.practiceSession = null; render();">← 問題一覧</button>
-      <div style="display:flex;gap:6px;">
-        <button class="btn btn-sm btn-secondary" onclick="state.practiceInputMode='sheet'; render();">📖 一覧</button>
-        <button class="btn btn-sm ${state.practiceInputMode === "choice" ? "btn-primary" : "btn-secondary"}" onclick="state.practiceInputMode='choice'; render();">📱 4択</button>
-        <button class="btn btn-sm ${state.practiceInputMode === "input" ? "btn-primary" : "btn-secondary"}" onclick="state.practiceInputMode='input'; render();">⌨️ 入力</button>
-      </div>
-    </div>
-
+  const quizCard = `
     <div class="quiz-box">
       <div class="quiz-meta">
         <span><strong>${escapeHtml(sess.title)}</strong>（${sess.index + 1} / ${sess.questions.length}）</span>
@@ -1235,6 +1397,19 @@ function renderPractice() {
         </div>
       ` : ""}
     </div>
+  `;
+
+  return `
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+      <button class="btn btn-sm btn-secondary" onclick="state.practiceSession = null; render();">← 問題一覧</button>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="btn btn-sm ${state.practiceShowTables ? "btn-primary" : "btn-secondary"}" onclick="state.practiceShowTables=!state.practiceShowTables; render();">📊 ${state.practiceShowTables ? "表を閉じる" : "表を横に出す"}</button>
+        <button class="btn btn-sm btn-secondary" onclick="state.practiceInputMode='sheet'; render();">📖 一覧</button>
+        <button class="btn btn-sm ${state.practiceInputMode === "choice" ? "btn-primary" : "btn-secondary"}" onclick="state.practiceInputMode='choice'; render();">📱 4択</button>
+        <button class="btn btn-sm ${state.practiceInputMode === "input" ? "btn-primary" : "btn-secondary"}" onclick="state.practiceInputMode='input'; render();">⌨️ 入力</button>
+      </div>
+    </div>
+    ${state.practiceShowTables ? `<div class="practice-split">${quizCard}${renderSideTablePanel()}</div>` : quizCard}
   `;
 }
 
