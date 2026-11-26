@@ -251,7 +251,7 @@ code {
   border-color: var(--primary);
 }
 
-/* Mobile bottom nav (5 tabs) */
+/* Mobile bottom nav (6 tabs) */
 .mobile-nav {
   position: fixed;
   bottom: 0;
@@ -262,8 +262,8 @@ code {
   backdrop-filter: blur(12px);
   border-top: 1px solid var(--border);
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+  grid-template-columns: repeat(6, 1fr);
+  padding: 6px 2px calc(6px + env(safe-area-inset-bottom));
 }
 
 .mobile-nav .nav-btn {
@@ -658,6 +658,20 @@ tr:last-child td {
   padding: 1px 5px;
   border-radius: 4px;
   font-weight: 800;
+}
+
+/* Red-sheet cloak mode for memorizing tables */
+.cloak-mode .hl {
+  background: var(--danger);
+  color: transparent;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.cloak-mode .hl.revealed {
+  background: var(--hl-bg);
+  color: var(--hl-text);
 }
 
 /* Example sentence block */

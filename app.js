@@ -57,6 +57,7 @@ const state = {
   textbookPage: 24,
   textbookZoom: 100, // 100 | 135 | 175
   textbookDim: true, // dim bright white scan in dark mode
+  tableCloak: false, // red-sheet cloak mode for tables
   lessonId: "zero",
   vocabMode: "list", // list | flashcard | quiz
   vocabCat: "all",
@@ -228,8 +229,9 @@ function renderHome() {
         </div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
-        <button class="btn btn-primary" onclick="openTextbookPage(24)">📚 教科書そのままビューを開く（p.24〜32）</button>
-        <button class="btn btn-secondary" onclick="openLesson('zero')">📖 まずは完全ゼロ入門を読む</button>
+        <button class="btn btn-primary" onclick="openTextbookPage(24)">📚 教科書そのままビュー</button>
+        <button class="btn btn-secondary" onclick="setTab('tables')">📊 変化表まとめ（カンペ）</button>
+        <button class="btn btn-secondary" onclick="openLesson('zero')">📖 完全ゼロ入門</button>
       </div>
     </section>
 
@@ -401,6 +403,249 @@ function renderTextbook() {
           <button class="btn btn-secondary" onclick="state.practiceInputMode='choice'; openPracticeSet('${cur.practiceId}');">✏️ 4択クイズでテストする</button>
         </div>
       </aside>
+    </div>
+  `;
+}
+
+// -------------------- Render: TABLES (変化表まとめ) --------------------
+
+function scrollToTable(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function toggleTableCloak() {
+  state.tableCloak = !state.tableCloak;
+  render();
+}
+
+function renderTables() {
+  const cloakClass = state.tableCloak ? "cloak-mode" : "";
+  return `
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+      <h2 class="section-heading" style="margin:0;">📊 変化表・文法カンペまとめ</h2>
+      <button class="btn btn-sm ${state.tableCloak ? "btn-danger" : "btn-secondary"}" onclick="toggleTableCloak()">
+        ${state.tableCloak ? "👀 赤シートOFF（全部表示）" : "🫣 赤シートON（重要箇所を隠す）"}
+      </button>
+    </div>
+    <p class="muted" style="margin-bottom:12px;">
+      ${state.tableCloak ? "赤く隠れた箇所をタップすると1つずつ答えが表示されます！" : "人称変化・格変化・不規則動詞・命令形など、L1〜L4（p.32まで）の表をすべて1ページにまとめました。"}
+    </p>
+
+    <div class="pill-bar">
+      <button class="pill" onclick="scrollToTable('tbl-verb-basic')">動詞の基本</button>
+      <button class="pill" onclick="scrollToTable('tbl-verb-irreg')">L4 不規則動詞</button>
+      <button class="pill" onclick="scrollToTable('tbl-imperativ')">L4 命令形</button>
+      <button class="pill" onclick="scrollToTable('tbl-pronoun')">L3 人称代名詞</button>
+      <button class="pill" onclick="scrollToTable('tbl-article')">冠詞の格変化</button>
+      <button class="pill" onclick="scrollToTable('tbl-plural')">L3 複数形</button>
+      <button class="pill" onclick="scrollToTable('tbl-weak')">L3 弱変化・Herz</button>
+      <button class="pill" onclick="scrollToTable('tbl-order')">語順・3格動詞</button>
+      <button class="pill" onclick="scrollToTable('tbl-question')">疑問詞・数字</button>
+    </div>
+
+    <div class="${cloakClass}">
+      <!-- 1. 動詞の現在人称変化（基本・sein・haben） -->
+      <div class="card" id="tbl-verb-basic">
+        <h3 class="card-title">① 動詞の現在人称変化（基本・sein・haben）</h3>
+        <p class="muted" style="margin-bottom:8px;">基本の語尾は <strong>e - st - t - en - t - en</strong>！語幹が -t/-d の動詞（warten）は -e- を挟みます。</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>主語（意味）</th><th>基本語尾</th><th>kaufen<br>（買う）</th><th>warten<br>（待つ）</th><th>sein<br>（〜である）</th><th>haben<br>（持っている）</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>ich</strong>（私は）</td><td><span class="hl">-e</span></td><td>kauf<span class="hl">e</span></td><td>warte</td><td><span class="hl">bin</span></td><td>habe</td></tr>
+              <tr><td><strong>du</strong>（君は）</td><td><span class="hl">-st</span></td><td>kauf<span class="hl">st</span></td><td>wart<span class="hl">est</span></td><td><span class="hl">bist</span></td><td><span class="hl">hast</span></td></tr>
+              <tr><td><strong>er / sie / es</strong>（彼/彼女/それ）</td><td><span class="hl">-t</span></td><td>kauf<span class="hl">t</span></td><td>wart<span class="hl">et</span></td><td><span class="hl">ist</span></td><td><span class="hl">hat</span></td></tr>
+              <tr><td><strong>wir</strong>（私たちは）</td><td><span class="hl">-en</span></td><td>kauf<span class="hl">en</span></td><td>warten</td><td><span class="hl">sind</span></td><td>haben</td></tr>
+              <tr><td><strong>ihr</strong>（君たちは）</td><td><span class="hl">-t</span></td><td>kauf<span class="hl">t</span></td><td>wart<span class="hl">et</span></td><td><span class="hl">seid</span></td><td>habt</td></tr>
+              <tr><td><strong>sie / Sie</strong>（彼ら / あなた）</td><td><span class="hl">-en</span></td><td>kauf<span class="hl">en</span></td><td>warten</td><td><span class="hl">sind</span></td><td>haben</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 2. L4 不規則動詞の現在人称変化（完全一覧） -->
+      <div class="card" id="tbl-verb-irreg">
+        <h3 class="card-title">② L4 不規則動詞の現在人称変化（p.30 完全一覧）</h3>
+        <p class="muted" style="margin-bottom:8px;">鉄則：変身するのは <strong>du</strong> と <strong>er / sie / es（3人称単数）</strong> だけ！ich / wir / ihr / sie / Sie はそのまま！</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>タイプ</th><th>原形（意味）</th><th>ich</th><th>du（君は）</th><th>er / sie / es</th><th>ihr</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="badge badge-masc">a→ä</span></td><td><strong>fahren</strong>（乗り物で行く）</td><td>fahre</td><td><span class="hl">fährst</span></td><td><span class="hl">fährt</span></td><td>fahrt</td></tr>
+              <tr><td><span class="badge badge-masc">a→ä</span></td><td><strong>schlafen</strong>（眠る）</td><td>schlafe</td><td><span class="hl">schläfst</span></td><td><span class="hl">schläft</span></td><td>schlaft</td></tr>
+              <tr><td><span class="badge badge-masc">a→ä</span></td><td><strong>tragen</strong>（運ぶ・着る）</td><td>trage</td><td><span class="hl">trägst</span></td><td><span class="hl">trägt</span></td><td>tragt</td></tr>
+              <tr><td><span class="badge badge-masc">a→ä</span></td><td><strong>waschen</strong>（洗う）</td><td>wasche</td><td><span class="hl">wäschst</span></td><td><span class="hl">wäscht</span></td><td>wascht</td></tr>
+              <tr><td><span class="badge badge-masc">a→ä</span></td><td><strong>laufen</strong>（歩く・走る）</td><td>laufe</td><td><span class="hl">läufst</span></td><td><span class="hl">läuft</span></td><td>lauft</td></tr>
+              <tr><td><span class="badge badge-masc">a→ä</span></td><td><strong>gefallen</strong>（気に入る +3格）</td><td>gefalle</td><td><span class="hl">gefällst</span></td><td><span class="hl">gefällt</span></td><td>gefallt</td></tr>
+              <tr><td><span class="badge badge-fem">e→i</span></td><td><strong>sprechen</strong>（話す）</td><td>spreche</td><td><span class="hl">sprichst</span></td><td><span class="hl">spricht</span></td><td>sprecht</td></tr>
+              <tr><td><span class="badge badge-fem">e→i</span></td><td><strong>essen</strong>（食べる）</td><td>esse</td><td><span class="hl">isst</span></td><td><span class="hl">isst</span></td><td>esst</td></tr>
+              <tr><td><span class="badge badge-fem">e→i</span></td><td><strong>helfen</strong>（助ける +3格）</td><td>helfe</td><td><span class="hl">hilfst</span></td><td><span class="hl">hilft</span></td><td>helft</td></tr>
+              <tr><td><span class="badge badge-fem">e→i</span></td><td><strong>treffen</strong>（会う +4格）</td><td>treffe</td><td><span class="hl">triffst</span></td><td><span class="hl">trifft</span></td><td>trefft</td></tr>
+              <tr><td><span class="badge badge-fem">e→i</span></td><td><strong>vergessen</strong>（忘れる）</td><td>vergesse</td><td><span class="hl">vergisst</span></td><td><span class="hl">vergisst</span></td><td>vergesst</td></tr>
+              <tr><td><span class="badge badge-fem">e→i</span></td><td><strong>werfen</strong>（投げる）</td><td>werfe</td><td><span class="hl">wirfst</span></td><td><span class="hl">wirft</span></td><td>werft</td></tr>
+              <tr><td><span class="badge badge-neut">e→ie</span></td><td><strong>sehen</strong>（見る）</td><td>sehe</td><td><span class="hl">siehst</span></td><td><span class="hl">sieht</span></td><td>seht</td></tr>
+              <tr><td><span class="badge badge-neut">e→ie</span></td><td><strong>lesen</strong>（読む）</td><td>lese</td><td><span class="hl">liest</span></td><td><span class="hl">liest</span></td><td>lest</td></tr>
+              <tr><td><span class="badge badge-neut">e→ie</span></td><td><strong>empfehlen</strong>（すすめる）</td><td>empfehle</td><td><span class="hl">empfiehlst</span></td><td><span class="hl">empfiehlt</span></td><td>empfehlt</td></tr>
+              <tr><td><span class="badge badge-neut">e→ie</span></td><td><strong>befehlen</strong>（命令する）</td><td>befehle</td><td><span class="hl">befiehlst</span></td><td><span class="hl">befiehlt</span></td><td>befehlt</td></tr>
+              <tr><td><span class="badge badge-neut">e→ie</span></td><td><strong>geschehen</strong>（起こる）</td><td>—</td><td>—</td><td><span class="hl">geschieht</span></td><td>—</td></tr>
+              <tr><td><span class="badge badge-pl">特殊</span></td><td><strong>halten</strong>（保つ・止まる）</td><td>halte</td><td><span class="hl">hältst</span></td><td><span class="hl">hält</span></td><td>haltet</td></tr>
+              <tr><td><span class="badge badge-pl">特殊</span></td><td><strong>geben</strong>（与える・渡す）</td><td>gebe</td><td><span class="hl">gibst</span></td><td><span class="hl">gibt</span></td><td>gebt</td></tr>
+              <tr><td><span class="badge badge-pl">特殊</span></td><td><strong>nehmen</strong>（取る・乗る）</td><td>nehme</td><td><span class="hl">nimmst</span></td><td><span class="hl">nimmt</span></td><td>nehmt</td></tr>
+              <tr><td><span class="badge badge-pl">特殊</span></td><td><strong>werden</strong>（〜になる）</td><td>werde</td><td><span class="hl">wirst</span></td><td><span class="hl">wird</span></td><td>werdet</td></tr>
+              <tr><td><span class="badge badge-pl">特殊</span></td><td><strong>wissen</strong>（知っている）</td><td><span class="hl">weiß</span></td><td><span class="hl">weißt</span></td><td><span class="hl">weiß</span></td><td>wisst</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 3. L4 命令形 & 〜しましょう -->
+      <div class="card" id="tbl-imperativ">
+        <h3 class="card-title">③ L4 命令形（du / ihr / Sie）＆「〜しましょう！」（p.31）</h3>
+        <p class="muted" style="margin-bottom:8px;"><strong>Sie のときだけ主語をつける！</strong> du の命令形では e→i/ie はそのまま、a→ä はウムラウトを戻す！</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>動詞（意味）</th><th>du（君へ）</th><th>ihr（君たちへ）</th><th>Sie（あなたへ）</th><th>〜しましょう！</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>kommen</strong>（来る）</td><td><span class="hl">Komm(e)!</span></td><td>Kommt!</td><td>Kommen Sie!</td><td>Kommen wir!</td></tr>
+              <tr><td><strong>warten</strong>（待つ）</td><td><span class="hl">Warte!</span></td><td>Wartet!</td><td>Warten Sie!</td><td>Warten wir!</td></tr>
+              <tr><td><strong>sprechen</strong>（話す e→i）</td><td><span class="hl">Sprich!</span></td><td>Sprecht!</td><td>Sprechen Sie!</td><td>Sprechen wir!</td></tr>
+              <tr><td><strong>helfen</strong>（手伝う e→i）</td><td><span class="hl">Hilf!</span></td><td>Helft!</td><td>Helfen Sie!</td><td>Helfen wir!</td></tr>
+              <tr><td><strong>sehen</strong>（見る e→ie）</td><td><span class="hl">Sieh!</span></td><td>Seht!</td><td>Sehen Sie!</td><td>Sehen wir!</td></tr>
+              <tr><td><strong>schlafen</strong>（眠る a→ä）</td><td><span class="hl">Schlaf(e)!</span></td><td>Schlaft!</td><td>Schlafen Sie!</td><td>Schlafen wir!</td></tr>
+              <tr><td><strong>sein</strong>（〜である・超特殊）</td><td><span class="hl">Sei ...!</span></td><td><span class="hl">Seid ...!</span></td><td><span class="hl">Seien Sie ...!</span></td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 4. L3 人称代名詞の格変化 -->
+      <div class="card" id="tbl-pronoun">
+        <h3 class="card-title">④ L3 人称代名詞の1・3・4格（p.25）</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>意味</th><th>1格（〜は）</th><th>3格（〜に）</th><th>4格（〜を）</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>私</td><td>ich</td><td><span class="hl">mir</span>（私に）</td><td><span class="hl">mich</span>（私を）</td></tr>
+              <tr><td>君（親称単数）</td><td>du</td><td><span class="hl">dir</span>（君に）</td><td><span class="hl">dich</span>（君を）</td></tr>
+              <tr><td>彼 / <span class="g-m">男性名詞</span></td><td class="g-m">er</td><td><span class="hl">ihm</span>（彼に）</td><td><span class="hl">ihn</span>（彼を）</td></tr>
+              <tr><td>彼女 / <span class="g-f">女性名詞</span></td><td class="g-f">sie</td><td><span class="hl">ihr</span>（彼女に）</td><td><span class="hl">sie</span>（彼女を）</td></tr>
+              <tr><td>それ / <span class="g-n">中性名詞</span></td><td class="g-n">es</td><td><span class="hl">ihm</span>（それに）</td><td><span class="hl">es</span>（それを）</td></tr>
+              <tr><td>私たち</td><td>wir</td><td><span class="hl">uns</span>（私たちに）</td><td><span class="hl">uns</span>（私たちを）</td></tr>
+              <tr><td>君たち（親称複数）</td><td>ihr</td><td><span class="hl">euch</span>（君たちに）</td><td><span class="hl">euch</span>（君たちを）</td></tr>
+              <tr><td>彼ら / <span class="g-p">複数名詞</span></td><td class="g-p">sie</td><td><span class="hl">ihnen</span>（彼らに）</td><td><span class="hl">sie</span>（彼らを）</td></tr>
+              <tr><td>あなた（敬称）</td><td>Sie</td><td><span class="hl">Ihnen</span>（あなたに）</td><td><span class="hl">Sie</span>（あなたを）</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 5. 定冠詞・不定冠詞の格変化 -->
+      <div class="card" id="tbl-article">
+        <h3 class="card-title">⑤ 定冠詞（der/die/das）＆ 不定冠詞（ein）の格変化</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>格（日本語のめやす）</th><th class="g-m">男性</th><th class="g-f">女性</th><th class="g-n">中性</th><th class="g-p">複数</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>1格</strong>（〜は / 〜が）</td><td class="g-m">der / ein</td><td class="g-f">die / eine</td><td class="g-n">das / ein</td><td class="g-p">die / —</td></tr>
+              <tr><td><strong>2格</strong>（〜の）</td><td>des / eines</td><td>der / einer</td><td>des / eines</td><td>der / —</td></tr>
+              <tr><td><strong>3格</strong>（〜に）</td><td><span class="hl">dem / einem</span></td><td><span class="hl">der / einer</span></td><td><span class="hl">dem / einem</span></td><td><span class="hl">den (+名詞-n)</span></td></tr>
+              <tr><td><strong>4格</strong>（〜を）</td><td><span class="hl">den / einen</span></td><td>die / eine</td><td>das / ein</td><td>die / —</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 6. L3 名詞の複数形5パターン -->
+      <div class="card" id="tbl-plural">
+        <h3 class="card-title">⑥ L3 名詞の複数形5パターン ＆ 複数3格の -n（p.24）</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>パターン</th><th>変音なし</th><th>変音あり（ウムラウト）</th><th>複数3格（〜たちに）の例</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1. 無語尾</td><td>Wagen → Wagen（車）</td><td>Bruder → <span class="hl">Brüder</span>（兄弟）</td><td>den <span class="hl">Vätern</span>（父たちに）</td></tr>
+              <tr><td>2. -e</td><td>Geschenk → Geschenke（贈り物）</td><td>Baum → <span class="hl">Bäume</span>（木）</td><td>den <span class="hl">Städten</span>（街々に）</td></tr>
+              <tr><td>3. -er</td><td>Lied → Lieder（歌）</td><td>Buch → <span class="hl">Bücher</span>（本）</td><td>den <span class="hl">Kindern</span>（子どもたちに）</td></tr>
+              <tr><td>4. -(e)n</td><td>Tasche → Taschen（かばん）</td><td><em>変音しない（女性が多い）</em></td><td>den Taschen（-nを重ねない!）</td></tr>
+              <tr><td>5. -s</td><td>Auto → Autos（車）</td><td><em>変音しない（外来語）</em></td><td>den <span class="hl">CDs</span>（-nを付けない!）</td></tr>
+              <tr><td>特殊</td><td colspan="3">Museum → <span class="hl">Museen</span>（博物館） / Gymnasium → <span class="hl">Gymnasien</span> / Firma → <span class="hl">Firmen</span>（会社）</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 7. L3 男性弱変化名詞 & das Herz -->
+      <div class="card" id="tbl-weak">
+        <h3 class="card-title">⑦ L3 男性弱変化名詞 ＆ 例外の中性名詞 das Herz（p.24）</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>格</th><th>der Junge（少年）</th><th>der Herr（男性・〜氏）</th><th>der Name（名前）</th><th>das Herz（心臓・心）</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1格（は）</td><td>der Junge</td><td>der Herr</td><td>der Name</td><td>das Herz</td></tr>
+              <tr><td>2格（の）</td><td>des <span class="hl">Jungen</span></td><td>des <span class="hl">Herrn</span></td><td>des <span class="hl">Namens</span></td><td>des <span class="hl">Herzens</span></td></tr>
+              <tr><td>3格（に）</td><td>dem <span class="hl">Jungen</span></td><td>dem <span class="hl">Herrn</span></td><td>dem <span class="hl">Namen</span></td><td>dem <span class="hl">Herzen</span></td></tr>
+              <tr><td>4格（を）</td><td>den <span class="hl">Jungen</span></td><td>den <span class="hl">Herrn</span></td><td>den <span class="hl">Namen</span></td><td><span class="hl">das Herz</span></td></tr>
+              <tr><td>複数</td><td>die <span class="hl">Jungen</span></td><td>die <span class="hl">Herren</span></td><td>die <span class="hl">Namen</span></td><td>die <span class="hl">Herzen</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 8. 語順 & 3格支配動詞 -->
+      <div class="card" id="tbl-order">
+        <h3 class="card-title">⑧ 3格・4格の語順 ＆ 3格をとる動詞（p.25）</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>組み合わせ</th><th>語順</th><th>例文（訳）</th></tr></thead>
+            <tbody>
+              <tr><td>両方とも名詞</td><td><span class="hl">3格 ＋ 4格</span></td><td>Ich gebe der Freundin ein Buch.<span class="tr-ja">私はその友達に1冊の本を渡します。</span></td></tr>
+              <tr><td>片方が代名詞</td><td><span class="hl">代名詞 ＋ 名詞</span></td><td>Ich gebe ihr ein Buch. / Ich gebe es der Freundin.<span class="tr-ja">私は彼女に本を渡す / 私はそれをその友達に渡す。</span></td></tr>
+              <tr><td>両方とも代名詞</td><td><span class="hl">4格 ＋ 3格</span>（逆転!）</td><td>Ich gebe es ihr.<span class="tr-ja">私はそれを彼女に渡します。</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout callout-tip" style="margin-bottom:0;">
+          <strong>必ず3格をとる5大動詞：</strong><br>
+          ・<code>gefallen</code>（気に入る）：Die Schuhe gefallen <span class="hl">ihr</span> gut.（それらの靴は彼女の気に入ります）<br>
+          ・<code>gehören</code>（〜のものである）：Das Buch gehört <span class="hl">mir</span>.（その本は私のものです）<br>
+          ・<code>glauben</code>（信じる）：Ich glaube <span class="hl">ihm</span>.（私は彼の言うことを信じます）<br>
+          ・<code>helfen</code>（手伝う）：Ich helfe <span class="hl">dir</span>.（私は君を手伝います）<br>
+          ・<code>danken</code>（感謝する）：Der Junge dankt <span class="hl">der Frau</span>.（その少年はその女性に感謝します）
+        </div>
+      </div>
+
+      <!-- 9. 疑問詞 & 時刻・数字 -->
+      <div class="card" id="tbl-question">
+        <h3 class="card-title">⑨ よく出る疑問詞 ＆ 時刻・数字早見表</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>ドイツ語</th><th>意味</th><th>例文（訳）</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Wer / <span class="hl">Wem</span> / Wen</strong></td><td>誰が(1) / <strong>誰に(3)</strong> / 誰を(4)</td><td><span class="hl">Wem</span> gehört der Rucksack?（そのリュックは誰のもの？）</td></tr>
+              <tr><td><strong>Was</strong></td><td>何を / 何が</td><td>Was schenkst du ihm?（君は彼に何を贈るの？）</td></tr>
+              <tr><td><strong>Wann</strong></td><td>いつ</td><td>Wann beginnt die Party?（パーティーはいつ始まりますか？）</td></tr>
+              <tr><td><strong>Um wie viel Uhr</strong></td><td>何時に</td><td>Um wie viel Uhr kommt Max?（マックスは何時に来ますか？）</td></tr>
+              <tr><td><strong>Wohin / Woher</strong></td><td>どこへ / どこから</td><td>Wohin fährst du?（どこへ行くの？）/ Woher weißt du das?（どこで知ったの？）</td></tr>
+              <tr><td><strong>Warum</strong></td><td>どうして</td><td>Warum isst das Kind kein Gemüse?（どうしてその子は野菜を食べないの？）</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="muted" style="margin-top:8px;"><strong>基本の数字：</strong>0 null / 1 eins / 2 zwei / 3 drei / 4 vier / 5 fünf / 6 sechs / 7 sieben / 8 acht / 9 neun / 10 zehn / 11 elf / 12 zwölf / 13 dreizehn / 14 vierzehn / 15 fünfzehn / 16 sechzehn / 17 siebzehn / 18 achtzehn / 19 neunzehn / 20 zwanzig / 30 dreißig</p>
+      </div>
     </div>
   `;
 }
@@ -1061,6 +1306,7 @@ function render() {
   if (state.tab === "home") main.innerHTML = renderHome();
   else if (state.tab === "textbook") main.innerHTML = renderTextbook();
   else if (state.tab === "learn") main.innerHTML = renderLearn();
+  else if (state.tab === "tables") main.innerHTML = renderTables();
   else if (state.tab === "vocab") main.innerHTML = renderVocab();
   else if (state.tab === "practice") main.innerHTML = renderPractice();
 }
@@ -1081,6 +1327,11 @@ document.addEventListener("click", (e) => {
   if (speakBtn) {
     e.stopPropagation();
     speakGerman(speakBtn.dataset.speak);
+    return;
+  }
+  const cloaked = e.target.closest(".cloak-mode .hl");
+  if (cloaked) {
+    cloaked.classList.toggle("revealed");
   }
 });
 
