@@ -453,9 +453,11 @@ function renderTables() {
       <button class="pill" onclick="scrollToTable('tbl-imperativ')">L4 命令形</button>
       <button class="pill" onclick="scrollToTable('tbl-pronoun')">L3 人称代名詞</button>
       <button class="pill" onclick="scrollToTable('tbl-article')">冠詞の格変化</button>
+      <button class="pill" onclick="scrollToTable('tbl-poss')">所有・kein</button>
       <button class="pill" onclick="scrollToTable('tbl-plural')">L3 複数形</button>
       <button class="pill" onclick="scrollToTable('tbl-weak')">L3 弱変化・Herz</button>
       <button class="pill" onclick="scrollToTable('tbl-order')">語順・3格動詞</button>
+      <button class="pill" onclick="scrollToTable('tbl-prep')">前置詞・時刻</button>
       <button class="pill" onclick="scrollToTable('tbl-question')">疑問詞</button>
       <button class="pill" onclick="scrollToTable('tbl-numbers')">数字 (0〜100)</button>
     </div>
@@ -691,6 +693,52 @@ function renderTables() {
           ・<code>21</code> ＝ <b>ein</b>（1 ※sを取る）＋ <b>und</b>（と）＋ <b>zwanzig</b>（20）→ <code>einundzwanzig</code><br>
           ・<code>35</code> ＝ <b>fünf</b>（5）＋ <b>und</b> ＋ <b>dreißig</b>（30）→ <code>fünfunddreißig</code><br>
           ・時刻の読み方：<code>8.05 Uhr</code> ＝ <code>acht Uhr fünf</code>（8時5分） / <code>13.30 Uhr</code> ＝ <code>dreizehn Uhr dreißig</code>（13時30分）
+        </div>
+      </div>
+
+      <!-- 11. 所有冠詞 & 否定冠詞 kein -->
+      <div class="card" id="tbl-poss">
+        <h3 class="card-title">⑪ 所有冠詞（mein / dein…）＆ 否定冠詞（kein）の変化表</h3>
+        <p class="muted" style="margin-bottom:8px;">変化の語尾は <strong>不定冠詞（ein）と同じ</strong>！複数形だけ <code>meine / meiner / meinen / meine</code> になります。</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>格</th><th class="g-m">男性</th><th class="g-f">女性</th><th class="g-n">中性</th><th class="g-p">複数</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>1格（は）</strong></td><td>mein / kein</td><td>mein<span class="hl">e</span> / kein<span class="hl">e</span></td><td>mein / kein</td><td>mein<span class="hl">e</span> / kein<span class="hl">e</span></td></tr>
+              <tr><td><strong>2格（の）</strong></td><td>meines / keines</td><td>meiner / keiner</td><td>meines / keines</td><td>meiner / keiner</td></tr>
+              <tr><td><strong>3格（に）</strong></td><td>mein<span class="hl">em</span> / kein<span class="hl">em</span></td><td>mein<span class="hl">er</span> / kein<span class="hl">er</span></td><td>mein<span class="hl">em</span> / kein<span class="hl">em</span></td><td>mein<span class="hl">en</span> / kein<span class="hl">en</span></td></tr>
+              <tr><td><strong>4格（を）</strong></td><td>mein<span class="hl">en</span> / kein<span class="hl">en</span></td><td>mein<span class="hl">e</span> / kein<span class="hl">e</span></td><td>mein / kein</td><td>mein<span class="hl">e</span> / kein<span class="hl">e</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="muted" style="margin-top:6px;"><strong>所有冠詞一覧：</strong>ich→<b>mein</b>（私の） / du→<b>dein</b>（君の） / er・es→<b>sein</b>（彼の・それの） / sie(彼女)→<b>ihr</b>（彼女の） / wir→<b>unser</b>（私たちの） / ihr→<b>euer</b>（君たちの） / sie(彼ら)→<b>ihr</b>（彼らの） / Sie→<b>Ihr</b>（あなたの）</p>
+        <p class="muted" style="margin-top:4px;"><strong>否定の使い分け：</strong>名詞を否定するときは <b>kein</b>（例：<code>kein Gemüse</code> 野菜を食べない）、動詞・形容詞・副詞を否定するときは <b>nicht</b>（例：<code>nicht gern</code> 好きではない）！</p>
+      </div>
+
+      <!-- 12. よく出る前置詞・時刻＆場所表現・文の基本語順 -->
+      <div class="card" id="tbl-prep">
+        <h3 class="card-title">⑫ よく出る前置詞・時刻＆場所表現・文の基本語順</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>表現・前置詞</th><th>意味・ルール</th><th>例文（訳）</th></tr></thead>
+            <tbody>
+              <tr><td><strong>um + 時刻</strong></td><td>〜時に</td><td><span class="hl">Um</span> 16 Uhr gehe ich nach Hause.（16時に帰宅します）</td></tr>
+              <tr><td><strong>gegen + 時刻</strong></td><td>〜時ごろ</td><td><span class="hl">Gegen</span> 16 Uhr bin ich zu Hause.（16時ごろ家にいます）</td></tr>
+              <tr><td><strong>nach Hause gehen</strong></td><td>帰宅する（家へ行く）</td><td>Ich gehe <span class="hl">nach Hause</span>.（私は帰宅します）</td></tr>
+              <tr><td><strong>zu Hause sein</strong></td><td>在宅している（家にいる）</td><td>Ich bin <span class="hl">zu Hause</span>.（私は家にいます）</td></tr>
+              <tr><td><strong>für + 4格</strong></td><td>〜のために</td><td>eine Party <span class="hl">für mich</span>（私のためのパーティー）</td></tr>
+              <tr><td><strong>nach + 地名</strong></td><td>〜（都市・国）へ</td><td>Fährst du <span class="hl">nach München</span>?（ミュンヘンへ行くの？）</td></tr>
+              <tr><td><strong>zu + 人(3格)</strong></td><td>〜のところへ</td><td>Max kommt <span class="hl">zu Lena</span>.（マックスはレーナのところへ来る）</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout callout-tip" style="margin-bottom:0;">
+          <strong>文の語順の鉄則（これだけは絶対！）：</strong><br>
+          ① 普通の文：<strong>動詞は必ず2番目！</strong> 文頭に時間や副詞が来たら主語は3番目（例：<code>Jetzt <b>liest</b> er Manga.</code> 今、彼はマンガを読んでいる）<br>
+          ② Yes/No疑問文：<strong>動詞が1番目！</strong>（例：<code><b>Kennst</b> du das Mädchen?</code> 君はその少女を知ってる？）<br>
+          ③ <code>man</code>（一般の人々）は<strong>必ず3人称単数扱い</strong>！（例：<code>Den Fernsehturm <b>sieht</b> man ...</code> テレビ塔は見える）
         </div>
       </div>
     </div>
@@ -1084,11 +1132,14 @@ function renderSideTablePanel() {
   const tabs = [
     { id: "pronoun", label: "人称代名詞" },
     { id: "article", label: "冠詞" },
+    { id: "poss", label: "所有・kein" },
     { id: "verb", label: "動詞基本" },
     { id: "irreg", label: "L4不規則" },
     { id: "imperativ", label: "命令形" },
     { id: "plural", label: "複数・弱変化" },
     { id: "order", label: "語順・3格動詞" },
+    { id: "prep", label: "前置詞・時刻" },
+    { id: "question", label: "疑問詞" },
     { id: "numbers", label: "数字" }
   ];
 
@@ -1157,9 +1208,12 @@ function renderSideTablePanel() {
           <tr><td>helfen（助ける）</td><td><b>hilfst</b></td><td><b>hilft</b></td></tr>
           <tr><td>treffen（会う）</td><td><b>triffst</b></td><td><b>trifft</b></td></tr>
           <tr><td>vergessen（忘れる）</td><td><b>vergisst</b></td><td><b>vergisst</b></td></tr>
+          <tr><td>werfen（投げる）</td><td><b>wirfst</b></td><td><b>wirft</b></td></tr>
           <tr><td>sehen（見る）</td><td><b>siehst</b></td><td><b>sieht</b></td></tr>
           <tr><td>lesen（読む）</td><td><b>liest</b></td><td><b>liest</b></td></tr>
           <tr><td>empfehlen（すすめる）</td><td><b>empfiehlst</b></td><td><b>empfiehlt</b></td></tr>
+          <tr><td>befehlen（命令する）</td><td><b>befiehlst</b></td><td><b>befiehlt</b></td></tr>
+          <tr><td>geschehen（起こる）</td><td>—</td><td><b>geschieht</b></td></tr>
           <tr><td>halten（保つ）</td><td><b>hältst</b></td><td><b>hält</b></td></tr>
           <tr><td>geben（与える）</td><td><b>gibst</b></td><td><b>gibt</b></td></tr>
           <tr><td>nehmen（取る・乗る）</td><td><b>nimmst</b></td><td><b>nimmt</b></td></tr>
@@ -1198,7 +1252,61 @@ function renderSideTablePanel() {
           <tr><td>die CD</td><td>die CDs</td><td>den <b>CDs</b>(-n不要)</td></tr>
         </tbody>
       </table></div>
-      <p class="muted" style="margin-top:6px;">弱変化：Junge→Jungen / Herr→単Herrn・複Herren / Name→2格Namens / das Herz→2格Herzens・3格Herzen・4格Herz</p>
+      <p class="muted" style="margin-top:6px;"><strong>複数5型：</strong>無語尾 / -e / -er / -(e)n / -s（特殊：Museum→Museen / Firma→Firmen）</p>
+      <div class="table-wrap" style="margin-top:6px;"><table>
+        <thead><tr><th>格</th><th>Junge</th><th>Herr</th><th>Name</th><th>das Herz</th></tr></thead>
+        <tbody>
+          <tr><td>2格</td><td>Jungen</td><td>Herrn</td><td><b>Namens</b></td><td><b>Herzens</b></td></tr>
+          <tr><td>3格</td><td>Jungen</td><td>Herrn</td><td>Namen</td><td><b>Herzen</b></td></tr>
+          <tr><td>4格</td><td>Jungen</td><td>Herrn</td><td>Namen</td><td><b>Herz</b></td></tr>
+          <tr><td>複数</td><td>Jungen</td><td><b>Herren</b></td><td>Namen</td><td>Herzen</td></tr>
+        </tbody>
+      </table></div>
+    `;
+  } else if (t === "poss") {
+    body = `
+      <div class="table-wrap"><table>
+        <thead><tr><th>格</th><th class="g-m">男</th><th class="g-f">女</th><th class="g-n">中</th><th class="g-p">複</th></tr></thead>
+        <tbody>
+          <tr><td>1格(は)</td><td>mein</td><td>mein<b>e</b></td><td>mein</td><td>mein<b>e</b></td></tr>
+          <tr><td>2格(の)</td><td>meines</td><td>meiner</td><td>meines</td><td>meiner</td></tr>
+          <tr><td>3格(に)</td><td>mein<b>em</b></td><td>mein<b>er</b></td><td>mein<b>em</b></td><td>mein<b>en</b></td></tr>
+          <tr><td>4格(を)</td><td>mein<b>en</b></td><td>mein<b>e</b></td><td>mein</td><td>mein<b>e</b></td></tr>
+        </tbody>
+      </table></div>
+      <p class="muted" style="margin-top:6px;"><b>kein</b>も同じ変化！mein(私) / dein(君) / sein(彼) / ihr(彼女・彼ら) / unser(私たち) / euer(君たち) / Ihr(あなた)</p>
+    `;
+  } else if (t === "prep") {
+    body = `
+      <div class="table-wrap"><table>
+        <thead><tr><th>表現</th><th>意味</th></tr></thead>
+        <tbody>
+          <tr><td><b>um</b> ~ Uhr</td><td>〜時に</td></tr>
+          <tr><td><b>gegen</b> ~ Uhr</td><td>〜時ごろ</td></tr>
+          <tr><td><b>nach Hause</b> gehen</td><td>帰宅する</td></tr>
+          <tr><td><b>zu Hause</b> sein</td><td>在宅している</td></tr>
+          <tr><td><b>für</b> + 4格</td><td>〜のために（für mich）</td></tr>
+          <tr><td><b>nach</b> + 地名</td><td>〜へ（nach Berlin）</td></tr>
+          <tr><td><b>zu</b> + 人(3格)</td><td>〜のところへ（zu Lena）</td></tr>
+        </tbody>
+      </table></div>
+      <p class="muted" style="margin-top:6px;">時間帯：morgens(朝) / vormittags(午前) / nachmittags(午後) / abends(夕方) / nachts(夜)</p>
+    `;
+  } else if (t === "question") {
+    body = `
+      <div class="table-wrap"><table>
+        <thead><tr><th>疑問詞</th><th>意味</th></tr></thead>
+        <tbody>
+          <tr><td><b>Wer / Wem / Wen</b></td><td>誰が(1) / <b>誰に(3)</b> / 誰を(4)</td></tr>
+          <tr><td><b>Was</b></td><td>何を / 何が</td></tr>
+          <tr><td><b>Wann</b></td><td>いつ</td></tr>
+          <tr><td><b>Um wie viel Uhr</b></td><td>何時に</td></tr>
+          <tr><td><b>Wie viel Uhr / Wie spät</b></td><td>何時ですか</td></tr>
+          <tr><td><b>Wohin / Woher</b></td><td>どこへ / どこから</td></tr>
+          <tr><td><b>Warum</b></td><td>どうして</td></tr>
+          <tr><td><b>Welches / Welche</b></td><td>どの〜</td></tr>
+        </tbody>
+      </table></div>
     `;
   } else if (t === "numbers") {
     body = `
@@ -1232,7 +1340,8 @@ function renderSideTablePanel() {
       </table></div>
       <div class="callout callout-tip" style="margin:8px 0 0;font-size:0.84rem;">
         <strong>必ず3格をとる動詞：</strong><br>
-        <code>gefallen</code>（気に入る）/ <code>gehören</code>（〜のもの）/ <code>glauben</code>（信じる）/ <code>helfen</code>（手伝う）/ <code>danken</code>（感謝する）
+        <code>gefallen</code>（気に入る）/ <code>gehören</code>（〜のもの）/ <code>glauben</code>（信じる）/ <code>helfen</code>（手伝う）/ <code>danken</code>（感謝する）<br>
+        <strong>文の基本語順：</strong>平叙文は<strong>動詞が2番目</strong>（倒置：<code>Jetzt liest er...</code>）／Yes-No疑問文は動詞が1番目／<code>man</code>は3人称単数扱い！
       </div>
     `;
   }
