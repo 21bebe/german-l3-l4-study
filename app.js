@@ -191,7 +191,7 @@ function openPracticeSet(setId) {
     p24: "plural",
     p25: "pronoun",
     p26: "pronoun",
-    "p27-28": "pronoun",
+    "p27-28": "numbers",
     p30: "irreg",
     p31: "imperativ",
     p32: "irreg"
@@ -456,7 +456,8 @@ function renderTables() {
       <button class="pill" onclick="scrollToTable('tbl-plural')">L3 複数形</button>
       <button class="pill" onclick="scrollToTable('tbl-weak')">L3 弱変化・Herz</button>
       <button class="pill" onclick="scrollToTable('tbl-order')">語順・3格動詞</button>
-      <button class="pill" onclick="scrollToTable('tbl-question')">疑問詞・数字</button>
+      <button class="pill" onclick="scrollToTable('tbl-question')">疑問詞</button>
+      <button class="pill" onclick="scrollToTable('tbl-numbers')">数字 (0〜100)</button>
     </div>
 
     <div class="${cloakClass}">
@@ -643,9 +644,9 @@ function renderTables() {
         </div>
       </div>
 
-      <!-- 9. 疑問詞 & 時刻・数字 -->
+      <!-- 9. 疑問詞 -->
       <div class="card" id="tbl-question">
-        <h3 class="card-title">⑨ よく出る疑問詞 ＆ 時刻・数字早見表</h3>
+        <h3 class="card-title">⑨ よく出る疑問詞まとめ</h3>
         <div class="table-wrap">
           <table>
             <thead><tr><th>ドイツ語</th><th>意味</th><th>例文（訳）</th></tr></thead>
@@ -659,7 +660,38 @@ function renderTables() {
             </tbody>
           </table>
         </div>
-        <p class="muted" style="margin-top:8px;"><strong>基本の数字：</strong>0 null / 1 eins / 2 zwei / 3 drei / 4 vier / 5 fünf / 6 sechs / 7 sieben / 8 acht / 9 neun / 10 zehn / 11 elf / 12 zwölf / 13 dreizehn / 14 vierzehn / 15 fünfzehn / 16 sechzehn / 17 siebzehn / 18 achtzehn / 19 neunzehn / 20 zwanzig / 30 dreißig</p>
+      </div>
+
+      <!-- 10. 数字の表 (0〜100) -->
+      <div class="card" id="tbl-numbers">
+        <h3 class="card-title">⑩ 数字の表（0〜100 ＆ 時刻の読み方）</h3>
+        <p class="muted" style="margin-bottom:8px;">時刻（p.26〜27）や年齢（18 Jahre alt）で必須！<strong>16・17・30</strong> のスペル変化に注意しよう。</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>0〜10</th><th>読み方</th><th>11〜20</th><th>読み方</th><th>10の位 (20〜100)</th><th>読み方</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>0</strong></td><td><span class="hl">null</span> <button class="speak-btn" data-speak="null">🔊</button></td><td><strong>11</strong></td><td><span class="hl">elf</span> <button class="speak-btn" data-speak="elf">🔊</button></td><td><strong>20</strong></td><td><span class="hl">zwanzig</span> <button class="speak-btn" data-speak="zwanzig">🔊</button></td></tr>
+              <tr><td><strong>1</strong></td><td><span class="hl">eins</span> <button class="speak-btn" data-speak="eins">🔊</button></td><td><strong>12</strong></td><td><span class="hl">zwölf</span> <button class="speak-btn" data-speak="zwölf">🔊</button></td><td><strong>30</strong></td><td><span class="hl">dreißig</span>（※ß!） <button class="speak-btn" data-speak="dreißig">🔊</button></td></tr>
+              <tr><td><strong>2</strong></td><td><span class="hl">zwei</span></td><td><strong>13</strong></td><td><span class="hl">dreizehn</span></td><td><strong>40</strong></td><td><span class="hl">vierzig</span></td></tr>
+              <tr><td><strong>3</strong></td><td><span class="hl">drei</span></td><td><strong>14</strong></td><td><span class="hl">vierzehn</span></td><td><strong>50</strong></td><td><span class="hl">fünfzig</span></td></tr>
+              <tr><td><strong>4</strong></td><td><span class="hl">vier</span></td><td><strong>15</strong></td><td><span class="hl">fünfzehn</span></td><td><strong>60</strong></td><td><span class="hl">sechzig</span>（※sなし）</td></tr>
+              <tr><td><strong>5</strong></td><td><span class="hl">fünf</span></td><td><strong>16</strong></td><td><span class="hl">sechzehn</span>（※sなし）</td><td><strong>70</strong></td><td><span class="hl">siebzig</span>（※enなし）</td></tr>
+              <tr><td><strong>6</strong></td><td><span class="hl">sechs</span></td><td><strong>17</strong></td><td><span class="hl">siebzehn</span>（※enなし）</td><td><strong>80</strong></td><td><span class="hl">achtzig</span></td></tr>
+              <tr><td><strong>7</strong></td><td><span class="hl">sieben</span></td><td><strong>18</strong></td><td><span class="hl">achtzehn</span></td><td><strong>90</strong></td><td><span class="hl">neunzig</span></td></tr>
+              <tr><td><strong>8</strong></td><td><span class="hl">acht</span></td><td><strong>19</strong></td><td><span class="hl">neunzehn</span></td><td><strong>100</strong></td><td><span class="hl">(ein)hundert</span></td></tr>
+              <tr><td><strong>9</strong></td><td><span class="hl">neun</span></td><td><strong>20</strong></td><td><span class="hl">zwanzig</span></td><td><strong>21</strong></td><td><span class="hl">einundzwanzig</span></td></tr>
+              <tr><td><strong>10</strong></td><td><span class="hl">zehn</span></td><td><strong>24</strong></td><td><span class="hl">vierundzwanzig</span></td><td><strong>59</strong></td><td><span class="hl">neunundfünfzig</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout callout-tip" style="margin-bottom:0;">
+          <strong>21〜99の超重要ルール（ドイツ語は「一の位」から逆に読む！）：</strong><br>
+          ・<code>21</code> ＝ <b>ein</b>（1 ※sを取る）＋ <b>und</b>（と）＋ <b>zwanzig</b>（20）→ <code>einundzwanzig</code><br>
+          ・<code>35</code> ＝ <b>fünf</b>（5）＋ <b>und</b> ＋ <b>dreißig</b>（30）→ <code>fünfunddreißig</code><br>
+          ・時刻の読み方：<code>8.05 Uhr</code> ＝ <code>acht Uhr fünf</code>（8時5分） / <code>13.30 Uhr</code> ＝ <code>dreizehn Uhr dreißig</code>（13時30分）
+        </div>
       </div>
     </div>
   `;
@@ -1056,7 +1088,8 @@ function renderSideTablePanel() {
     { id: "irreg", label: "L4不規則" },
     { id: "imperativ", label: "命令形" },
     { id: "plural", label: "複数・弱変化" },
-    { id: "order", label: "語順・3格動詞" }
+    { id: "order", label: "語順・3格動詞" },
+    { id: "numbers", label: "数字" }
   ];
 
   const t = state.practiceTableTab;
@@ -1166,6 +1199,26 @@ function renderSideTablePanel() {
         </tbody>
       </table></div>
       <p class="muted" style="margin-top:6px;">弱変化：Junge→Jungen / Herr→単Herrn・複Herren / Name→2格Namens / das Herz→2格Herzens・3格Herzen・4格Herz</p>
+    `;
+  } else if (t === "numbers") {
+    body = `
+      <div class="table-wrap"><table>
+        <thead><tr><th>0〜10</th><th>11〜20</th><th>10の位</th></tr></thead>
+        <tbody>
+          <tr><td>0 null</td><td>11 <b>elf</b></td><td>20 <b>zwanzig</b></td></tr>
+          <tr><td>1 eins</td><td>12 <b>zwölf</b></td><td>30 <b>dreißig</b>(ß!)</td></tr>
+          <tr><td>2 zwei</td><td>13 dreizehn</td><td>40 vierzig</td></tr>
+          <tr><td>3 drei</td><td>14 vierzehn</td><td>50 fünfzig</td></tr>
+          <tr><td>4 vier</td><td>15 fünfzehn</td><td>60 <b>sechzig</b></td></tr>
+          <tr><td>5 fünf</td><td>16 <b>sechzehn</b></td><td>70 <b>siebzig</b></td></tr>
+          <tr><td>6 sechs</td><td>17 <b>siebzehn</b></td><td>80 achtzig</td></tr>
+          <tr><td>7 sieben</td><td>18 achtzehn</td><td>90 neunzig</td></tr>
+          <tr><td>8 acht</td><td>19 neunzehn</td><td>100 hundert</td></tr>
+          <tr><td>9 neun</td><td>20 zwanzig</td><td>21 einundzwanzig</td></tr>
+          <tr><td>10 zehn</td><td>24 vierundzwanzig</td><td>35 fünfunddreißig</td></tr>
+        </tbody>
+      </table></div>
+      <p class="muted" style="margin-top:6px;">21〜99は「一の位＋<b>und</b>＋十の位」の逆さ読み！時刻は「時＋<b>Uhr</b>＋分」。</p>
     `;
   } else {
     body = `
